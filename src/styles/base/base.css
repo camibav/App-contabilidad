@@ -1,0 +1,21 @@
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  background: var(--color-background);
+  color: var(--color-text);
+}
+
+h1 {
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+input {
+  display: block;
+  margin-bottom: 16px;
+}

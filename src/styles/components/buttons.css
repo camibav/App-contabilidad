@@ -1,0 +1,64 @@
+.secondary-button {
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.secondary-button:hover {
+  background: var(--color-background);
+}
+
+.secondary-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.export-button {
+  border-color: var(--color-dark);
+  background: var(--color-dark);
+  color: var(--color-surface);
+}
+
+.export-button:hover {
+  background: var(--color-dark-hover);
+}
+
+.export-button:disabled,
+.export-button:disabled:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-background);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.backup-button {
+  border-color: var(--color-text-soft);
+}
+
+.restore-button {
+  border-color: var(--color-text-soft);
+}
+
+.backup-button:hover,
+.restore-button:hover {
+  background: var(--color-background);
+}
+
+@media (max-width: 700px) {
+  .secondary-button {
+    width: 100%;
+  }
+
+  .section-actions .secondary-button,
+  .section-actions .export-button,
+  .section-actions .backup-button,
+  .section-actions .restore-button {
+    width: 100%;
+  }
+}

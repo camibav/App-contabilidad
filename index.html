@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de contabilidad</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <main class="container">
+    <header class="page-header">
+      <div>
+        <h1>Dashboard de contabilidad</h1>
+        <p class="page-description">
+          Carga uno o varios extractos PDF de Nu Bank para extraer, procesar y revisar tus movimientos.
+        </p>
+      </div>
+    </header>
+
+    <section class="card">
+      <label for="pdfInput">Selecciona uno o varios extractos PDF de Nu Bank</label>
+      <input id="pdfInput" type="file" accept="application/pdf" multiple />
+
+      <p id="status" class="status">No se ha seleccionado ningún PDF.</p>
+    </section>
+
+    <section class="summary-grid" aria-label="Resumen acumulado">
+      <article class="summary-card">
+        <span class="summary-label">Ingresos</span>
+        <strong id="incomeSummary" class="summary-value">$ 0</strong>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Gastos</span>
+        <strong id="expensesSummary" class="summary-value">$ 0</strong>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Balance neto</span>
+        <strong id="balanceSummary" class="summary-value">$ 0</strong>
+      </article>
+
+      <article class="summary-card">
+        <span class="summary-label">Movimientos</span>
+        <strong id="totalMovementsSummary" class="summary-value">0</strong>
+      </article>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Archivos procesados</h2>
+          <p class="section-description">
+            Archivos ya cargados en el dashboard acumulado.
+          </p>
+        </div>
+      </div>
+
+      <ul id="processedFilesList" class="processed-files-list"></ul>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Filtros</h2>
+          <p class="section-description">
+            Filtra movimientos por mes, archivo, tipo, categoría o descripción.
+          </p>
+        </div>
+
+        <button id="clearFiltersButton" class="secondary-button" type="button">
+          Limpiar filtros
+        </button>
+      </div>
+
+      <div class="filters-grid">
+        <div class="filter-field">
+          <label for="monthFilter">Mes</label>
+          <select id="monthFilter">
+            <option value="">Todos los meses</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="sourceFilter">Archivo</label>
+          <select id="sourceFilter">
+            <option value="">Todos los archivos</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="typeFilter">Tipo</label>
+          <select id="typeFilter">
+            <option value="">Todos los tipos</option>
+            <option value="income">Ingresos</option>
+            <option value="expense">Gasto</option>
+          </select>
+        </div>
+
+        <div class="filter-field">
+          <label for="categoryFilter">Categoría</label>
+          <select id="categoryFilter">
+            <option value="">Todas las categorías</option>
+          </select>
+        </div>
+
+        <div class="filter-field filter-field--wide">
+          <label for="descriptionSearch">Descripción</label>
+          <input
+            id="descriptionSearch"
+            type="search"
+            placeholder="Buscar por descripción..."
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Indicadores</h2>
+          <p class="section-description">
+            Observaciones clave basadas en los datos filtrados actuales.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="dashboardInsightsList"
+        class="insights-grid"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Gráficas</h2>
+          <p class="section-description">
+            Resumen visual de gastos por mes y categoría según los filtros actuales.
+          </p>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <article class="chart-card">
+          <div class="chart-header">
+            <h3>Gastos por mes</h3>
+            <p>Distribución mensual de gastos.</p>
+          </div>
+
+          <div
+            id="expensesByMonthChart"
+            class="bar-chart"
+            aria-live="polite"
+          ></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-header">
+            <h3>Gastos por categoría</h3>
+            <p>Gastos agrupados por categoría asignada.</p>
+          </div>
+
+          <div
+            id="expensesByCategoryChart"
+            class="bar-chart"
+            aria-live="polite"
+          ></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-header">
+            <h3>Ingresos vs gastos por mes</h3>
+            <p>Comparación mensual entre ingresos y gastos.</p>
+          </div>
+
+          <div
+            id="incomeVsExpensesChart"
+            class="grouped-bar-chart"
+            aria-live="polite"
+          ></div>
+        </article>
+
+        <article class="chart-card">
+          <div class="chart-header">
+            <h3>Participación de gastos por categoría</h3>
+            <p>Distribución porcentual de gastos por categoría.</p>
+          </div>
+
+          <div
+            id="expensesCategoryShareChart"
+            class="donut-chart"
+            aria-live="polite"
+          ></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Desglose por categoría</h2>
+          <p class="section-description">
+            Distribución detallada por categoría según los datos filtrados actuales.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="categoryBreakdownList"
+        class="category-breakdown-list"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Mayores gastos</h2>
+          <p class="section-description">
+            Mayores gastos detectados en los datos filtrados actuales.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="topExpensesList"
+        class="top-expenses-list"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Gastos recurrentes</h2>
+          <p class="section-description">
+            Gastos detectados en varios meses con base en descripciones similares.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="recurringExpensesList"
+        class="recurring-expenses-list"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Gastos recurrentes excluidos</h2>
+          <p class="section-description">
+            Patrones excluidos manualmente de los cálculos de gastos recurrentes.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="excludedRecurringExpensesList"
+        class="excluded-recurring-expenses-list"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Gastos fijos vs variables</h2>
+          <p class="section-description">
+            Distribución estimada entre gastos fijos recurrentes y gastos variables.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="fixedVariableExpensesSummary"
+        class="fixed-variable-summary"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Movimientos sin clasificar</h2>
+          <p class="section-description">
+            Movimientos que aún necesitan una categoría en la vista filtrada actual.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="uncategorizedMovementsList"
+        class="uncategorized-movements-list"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Reglas de categoría aprendidas</h2>
+          <p class="section-description">
+            Reglas de categorización manual guardadas para futuras importaciones de PDF.
+          </p>
+        </div>
+
+        <span
+          id="learnedCategoryRulesCount"
+          class="learned-rules-count"
+          aria-live="polite"
+        >
+          0 reglas
+        </span>
+      </div>
+
+      <div
+        id="learnedCategoryRulesList"
+        class="learned-rules-list"
+        aria-live="polite"
+      ></div>
+    </section>
+
+    <section class="card">
+      <div class="section-header">
+        <div>
+          <h2>Movimientos procesados</h2>
+          <p class="section-description">
+            Revisa las transacciones detectadas antes de seguir ampliando el dashboard.
+          </p>
+        </div>
+
+        <div class="section-actions">
+          <button
+            id="exportFilteredCsvButton"
+            class="secondary-button export-button"
+            type="button"
+          >
+            Exportar CSV filtrado
+          </button>
+
+          <button
+            id="exportBackupJsonButton"
+            class="secondary-button"
+            type="button"
+          >
+            Exportar backup JSON
+          </button>
+
+          <button
+            id="importBackupJsonButton"
+            class="secondary-button"
+            type="button"
+          >
+            Restaurar backup JSON
+          </button>
+
+          <input
+            id="backupJsonInput"
+            type="file"
+            accept="application/json,.json"
+            hidden
+          />
+
+          <button
+            id="clearSavedDataButton"
+            class="secondary-button"
+            type="button"
+          >
+            Eliminar datos guardados
+          </button>
+        </div>
+      </div>
+
+      <p id="movementsTableStatus" class="table-status" aria-live="polite">
+        Aún no hay movimientos cargados.
+      </p>
+
+      <div class="table-toolbar" aria-label="Controles de paginación de la tabla">
+        <label class="page-size-control" for="pageSizeSelect">
+          Filas por página
+          <select id="pageSizeSelect">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </label>
+
+        <div class="pagination-controls">
+          <span id="tablePaginationStatus" class="pagination-status">
+            Página 1 de 1
+          </span>
+
+          <button id="previousPageButton" class="secondary-button" type="button">
+            Anterior
+          </button>
+
+          <button id="nextPageButton" class="secondary-button" type="button">
+            Siguiente
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="movements-table">
+          <thead>
+            <tr>
+              <th>
+                <button class="table-sort-button" type="button" data-sort-key="date">
+                  Fecha
+                  <span class="sort-indicator" data-sort-indicator="date">↓</span>
+                </button>
+              </th>
+
+              <th>Origen</th>
+              <th>Descripción</th>
+              <th>Categoría</th>
+
+              <th>
+                <button class="table-sort-button" type="button" data-sort-key="type">
+                  Tipo
+                  <span class="sort-indicator" data-sort-indicator="type"></span>
+                </button>
+              </th>
+
+              <th>
+                <button class="table-sort-button" type="button" data-sort-key="amount">
+                  Monto
+                  <span class="sort-indicator" data-sort-indicator="amount"></span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+
+          <tbody id="movementsTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <details class="debug-panel">
+        <summary>Debug: texto bruto extraído</summary>
+        <pre id="output" class="output"></pre>
+      </details>
+    </section>
+  </main>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

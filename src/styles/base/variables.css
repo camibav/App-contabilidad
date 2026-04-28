@@ -1,0 +1,26 @@
+:root {
+  --color-background: #f4f4f5;
+  --color-surface: #ffffff;
+  --color-surface-muted: #fafafa;
+  --color-text: #18181b;
+  --color-text-soft: #52525b;
+  --color-text-muted: #71717a;
+  --color-placeholder: #a1a1aa;
+  --color-border: #e4e4e7;
+  --color-border-strong: #d4d4d8;
+  --color-dark: #18181b;
+  --color-dark-hover: #27272a;
+  --color-income: #166534;
+  --color-income-bg: #dcfce7;
+  --color-expense: #991b1b;
+  --color-expense-bg: #fee2e2;
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  --font-family-base: Arial, sans-serif;
+
+  --container-width: min(1100px, 92%);
+}

@@ -1,0 +1,106 @@
+.uncategorized-movements-list {
+  display: grid;
+  gap: 12px;
+}
+
+.uncategorized-movement-summary {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.uncategorized-movement-item {
+  display: grid;
+  grid-template-columns: 1fr minmax(180px, 220px);
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.uncategorized-movement-main {
+  min-width: 0;
+}
+
+.uncategorized-movement-description {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.uncategorized-movement-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.uncategorized-movement-amount {
+  display: block;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.uncategorized-movement-actions {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+}
+
+.uncategorized-action-label {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.uncategorized-movement-actions .category-select {
+  min-width: 180px;
+}
+
+.uncategorized-movement-empty-state {
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 24px 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.uncategorized-movement-empty-state strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.uncategorized-movement-empty-state p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (max-width: 620px) {
+  .uncategorized-movement-item {
+    grid-template-columns: 1fr;
+  }
+
+  .uncategorized-movement-actions {
+    justify-items: stretch;
+  }
+
+  .uncategorized-movement-actions .category-select {
+    width: 100%;
+  }
+}

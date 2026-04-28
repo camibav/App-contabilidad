@@ -1,0 +1,21 @@
+.output {
+  min-height: 400px;
+  max-height: 700px;
+  overflow: auto;
+  padding: 16px;
+  background: var(--color-dark);
+  color: var(--color-background);
+  border-radius: var(--radius-sm);
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.debug-panel summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.debug-panel .output {
+  margin-top: 16px;
+}

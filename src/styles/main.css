@@ -1,0 +1,30 @@
+@import "./base/variables.css";
+@import "./base/reset.css";
+@import "./base/base.css";
+
+@import "./layout/container.css";
+@import "./layout/page-header.css";
+@import "./layout/section-header.css";
+
+@import "./components/cards.css";
+@import "./components/buttons.css";
+@import "./components/forms.css";
+@import "./components/status.css";
+@import "./components/debug.css";
+@import "./components/summary.css";
+@import "./components/badges.css";
+@import "./components/processed-files.css";
+@import "./components/filters.css";
+@import "./components/insights.css";
+@import "./components/charts.css";
+@import "./components/category-breakdown.css";
+@import "./components/top-expenses.css";
+@import "./components/recurring-expenses.css";
+@import "./components/excluded-recurring-expenses.css";
+@import "./components/fixed-variable-expenses.css";
+@import "./components/uncategorized-movements.css";
+@import "./components/learned-rules.css";
+@import "./components/movements-table.css";
+@import "./components/empty-state.css";
+
+@import "./utilities/amount.css";

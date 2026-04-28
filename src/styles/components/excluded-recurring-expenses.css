@@ -1,0 +1,83 @@
+.excluded-recurring-expenses-list {
+  display: grid;
+  gap: 12px;
+}
+
+.excluded-recurring-expenses-summary {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.excluded-recurring-expense-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-left: 5px solid #ff0000;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.excluded-recurring-expense-main {
+  min-width: 0;
+}
+
+.excluded-recurring-expense-description {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.excluded-recurring-expense-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.excluded-recurring-expense-action {
+  white-space: nowrap;
+}
+
+.excluded-recurring-expense-empty-state {
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 24px 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.excluded-recurring-expense-empty-state strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.excluded-recurring-expense-empty-state p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (max-width: 620px) {
+  .excluded-recurring-expense-item {
+    grid-template-columns: 1fr;
+  }
+
+  .excluded-recurring-expense-action {
+    width: 100%;
+  }
+}

@@ -1,0 +1,153 @@
+.recurring-expenses-list {
+  display: grid;
+  gap: 12px;
+}
+
+.recurring-expenses-summary {
+  margin: 0;
+  color: var(--color-text-soft);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.recurring-expense-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, auto);
+  gap: 16px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.recurring-expense-main {
+  min-width: 0;
+}
+
+.recurring-expense-description {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recurring-expense-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.recurring-expense-months {
+  overflow: hidden;
+  margin: 8px 0 0;
+  color: var(--color-text-soft);
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recurring-expense-side {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
+.recurring-expense-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(110px, auto));
+  gap: 12px;
+  justify-content: end;
+}
+
+.recurring-expense-metric {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.recurring-expense-label {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.recurring-expense-value {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.recurring-expense-value--primary {
+  color: #0057ff;
+}
+
+.recurring-expense-action {
+  width: fit-content;
+  border-color: #ff0000;
+  color: #ff0000;
+}
+
+.recurring-expense-action:hover {
+  background: #fee2e2;
+}
+
+.recurring-expense-empty-state {
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 24px 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.recurring-expense-empty-state strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.recurring-expense-empty-state p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (max-width: 780px) {
+  .recurring-expense-item {
+    grid-template-columns: 1fr;
+  }
+
+  .recurring-expense-side {
+    justify-items: stretch;
+  }
+
+  .recurring-expense-metrics {
+    justify-content: stretch;
+  }
+
+  .recurring-expense-metric {
+    justify-items: start;
+  }
+
+  .recurring-expense-action {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .recurring-expense-metrics {
+    grid-template-columns: 1fr;
+  }
+}

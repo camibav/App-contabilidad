@@ -1,0 +1,138 @@
+.learned-rules-count {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-muted);
+  color: var(--color-text-soft);
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.learned-rules-list {
+  display: grid;
+  gap: 12px;
+}
+
+.learned-rule-item {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(130px, auto) minmax(150px, auto) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.learned-rule-main {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.learned-rule-pattern {
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.learned-rule-meta {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.learned-rule-category,
+.learned-rule-date {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  font-variant-numeric: tabular-nums;
+}
+
+.learned-rule-label {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.learned-rule-category strong,
+.learned-rule-date strong {
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.learned-rule-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.learned-rule-delete-button {
+  border-color: #ff0000;
+  color: #ff0000;
+}
+
+.learned-rule-delete-button:hover {
+  background: #fee2e2;
+}
+
+.learned-rules-empty-state {
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 24px 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.learned-rules-empty-state strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.learned-rules-empty-state p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .learned-rule-item {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .learned-rule-main {
+    grid-column: 1 / -1;
+  }
+
+  .learned-rule-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .learned-rules-count {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .learned-rule-item {
+    grid-template-columns: 1fr;
+  }
+
+  .learned-rule-actions,
+  .learned-rule-delete-button {
+    width: 100%;
+  }
+}

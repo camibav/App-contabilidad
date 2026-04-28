@@ -1,0 +1,109 @@
+.category-breakdown-list {
+  display: grid;
+  gap: 12px;
+}
+
+.category-breakdown-item {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) repeat(4, minmax(110px, auto));
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+}
+
+.category-breakdown-main {
+  min-width: 0;
+}
+
+.category-breakdown-name {
+  display: block;
+  overflow: hidden;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-breakdown-meta {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.category-breakdown-metric {
+  display: grid;
+  gap: 4px;
+  justify-items: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.category-breakdown-label {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.category-breakdown-value {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.category-breakdown-value--income {
+  color: var(--color-income);
+}
+
+.category-breakdown-value--expense {
+  color: var(--color-expense);
+}
+
+.category-breakdown-value--neutral {
+  color: var(--color-text-soft);
+}
+
+.category-breakdown-empty-state {
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 24px 16px;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.category-breakdown-empty-state strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--color-text);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.category-breakdown-empty-state p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .category-breakdown-item {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .category-breakdown-main {
+    grid-column: 1 / -1;
+  }
+
+  .category-breakdown-metric {
+    justify-items: start;
+  }
+}
+
+@media (max-width: 560px) {
+  .category-breakdown-item {
+    grid-template-columns: 1fr;
+  }
+}
