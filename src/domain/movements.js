@@ -19,6 +19,10 @@ export function parseNuMovements(
     : [];
 
   const statementYear = extractStatementYear(rawText);
+  const statementMonth = inferStatementMonthFromFileName(
+    sourceFileName,
+    statementYear
+  );
 
   const lines = rawText
     .split("\n")
@@ -54,6 +58,12 @@ export function parseNuMovements(
       },
     });
 
+    const dedupeKey = buildMovementDedupeKey({
+      date,
+      description: cleanMovementDescription,
+      amount: signedAmount,
+    });
+
     movements.push({
       id: buildMovementId({
         date,
@@ -61,14 +71,17 @@ export function parseNuMovements(
         amount: signedAmount,
         source: sourceFileName,
       }),
+      dedupeKey,
       date,
       month: monthKey,
+      statementMonth,
       description: cleanMovementDescription,
       category: categoryResult.category,
       categorySource: categoryResult.source,
       amount: signedAmount,
       type,
       source: sourceFileName,
+      sources: normalizeMovementSources(sourceFileName),
       rawLine: line,
     });
   }
@@ -76,24 +89,37 @@ export function parseNuMovements(
   return movements;
 }
 
-export function mergeMovementsById(previousMovements, newMovements) {
+export function mergeMovementsById(previousMovements = [], newMovements = []) {
   const movementsMap = new Map();
 
   for (const movement of previousMovements) {
-    movementsMap.set(movement.id, movement);
+    const mergeKey = getMovementMergeKey(movement);
+
+    if (!mergeKey) {
+      continue;
+    }
+
+    movementsMap.set(mergeKey, normalizeMovementForMerge(movement));
   }
 
   for (const movement of newMovements) {
-    const existingMovement = movementsMap.get(movement.id);
+    const normalizedMovement = normalizeMovementForMerge(movement);
+    const mergeKey = getMovementMergeKey(normalizedMovement);
+
+    if (!mergeKey) {
+      continue;
+    }
+
+    const existingMovement = movementsMap.get(mergeKey);
 
     if (!existingMovement) {
-      movementsMap.set(movement.id, movement);
+      movementsMap.set(mergeKey, normalizedMovement);
       continue;
     }
 
     movementsMap.set(
-      movement.id,
-      mergeMovementPreservingManualCategory(existingMovement, movement)
+      mergeKey,
+      mergeMovementPreservingManualCategory(existingMovement, normalizedMovement)
     );
   }
 
@@ -191,10 +217,24 @@ export function normalizeStoredMovement(
     ? inferredCategory.category
     : existingCategory;
 
+  const dedupeKey =
+    movement.dedupeKey ??
+    buildMovementDedupeKey({
+      date,
+      description,
+      amount,
+    });
+
+  const sources = normalizeMovementSources(movement.sources, source);
+  const statementMonth =
+    movement.statementMonth ?? inferStatementMonthFromFileName(source, date.slice(0, 4));
+
   const normalizedMovement = {
     id: movement.id,
+    dedupeKey,
     date,
     month,
+    statementMonth,
     description,
     category,
     categorySource: getCategorySource({
@@ -206,6 +246,7 @@ export function normalizeStoredMovement(
     amount,
     type,
     source,
+    sources,
     rawLine: movement.rawLine ?? "",
   };
 
@@ -221,10 +262,40 @@ export function normalizeStoredMovement(
   return normalizedMovement;
 }
 
+function normalizeMovementForMerge(movement) {
+  const source = movement.source ?? "Unknown source";
+  const dedupeKey =
+    movement.dedupeKey ??
+    buildMovementDedupeKey({
+      date: movement.date,
+      description: movement.description,
+      amount: movement.amount,
+    });
+
+  return {
+    ...movement,
+    dedupeKey,
+    sources: normalizeMovementSources(movement.sources, source),
+  };
+}
+
 function mergeMovementPreservingManualCategory(existingMovement, incomingMovement) {
+  const mergedSources = normalizeMovementSources(
+    existingMovement.sources,
+    existingMovement.source,
+    incomingMovement.sources,
+    incomingMovement.source
+  );
+
   if (existingMovement.categorySource === "manual") {
     return {
       ...incomingMovement,
+      id: existingMovement.id ?? incomingMovement.id,
+      dedupeKey: existingMovement.dedupeKey ?? incomingMovement.dedupeKey,
+      source: existingMovement.source ?? incomingMovement.source,
+      sources: mergedSources,
+      statementMonth:
+        existingMovement.statementMonth ?? incomingMovement.statementMonth ?? null,
       category: existingMovement.category,
       categorySource: "manual",
     };
@@ -233,6 +304,12 @@ function mergeMovementPreservingManualCategory(existingMovement, incomingMovemen
   return {
     ...existingMovement,
     ...incomingMovement,
+    id: existingMovement.id ?? incomingMovement.id,
+    dedupeKey: existingMovement.dedupeKey ?? incomingMovement.dedupeKey,
+    source: existingMovement.source ?? incomingMovement.source,
+    sources: mergedSources,
+    statementMonth:
+      existingMovement.statementMonth ?? incomingMovement.statementMonth ?? null,
     category: incomingMovement.category ?? existingMovement.category,
     categorySource:
       incomingMovement.categorySource ?? existingMovement.categorySource,
@@ -325,14 +402,26 @@ function getCategorySource({
   return "auto";
 }
 
+function getMovementMergeKey(movement) {
+  if (movement?.dedupeKey) {
+    return movement.dedupeKey;
+  }
+
+  return buildMovementDedupeKey({
+    date: movement?.date,
+    description: movement?.description,
+    amount: movement?.amount,
+  });
+}
+
 function sortMovementsByDate(a, b) {
-  const dateComparison = a.date.localeCompare(b.date);
+  const dateComparison = String(a.date ?? "").localeCompare(String(b.date ?? ""));
 
   if (dateComparison !== 0) {
     return dateComparison;
   }
 
-  return a.description.localeCompare(b.description);
+  return String(a.description ?? "").localeCompare(String(b.description ?? ""));
 }
 
 function buildMovementId({ date, description, amount, source }) {
@@ -342,4 +431,77 @@ function buildMovementId({ date, description, amount, source }) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
+}
+
+function buildMovementDedupeKey({ date, description, amount }) {
+  return `${date}-${description}-${amount}`
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function normalizeMovementSources(...sourceValues) {
+  const sources = [];
+
+  for (const value of sourceValues.flat()) {
+    const source = String(value ?? "").trim();
+
+    if (!source || sources.includes(source)) {
+      continue;
+    }
+
+    sources.push(source);
+  }
+
+  return sources;
+}
+
+function inferStatementMonthFromFileName(fileName, fallbackYear) {
+  const normalizedFileName = normalizeText(fileName);
+  const yearMatch = normalizedFileName.match(/\b(20\d{2})\b/);
+  const year = yearMatch?.[1] ?? fallbackYear;
+
+  if (!year) {
+    return null;
+  }
+
+  const monthEntries = [
+    ["ENERO", "01"],
+    ["ENE", "01"],
+    ["FEBRERO", "02"],
+    ["FEB", "02"],
+    ["MARZO", "03"],
+    ["MAR", "03"],
+    ["ABRIL", "04"],
+    ["ABR", "04"],
+    ["MAYO", "05"],
+    ["MAY", "05"],
+    ["JUNIO", "06"],
+    ["JUN", "06"],
+    ["JULIO", "07"],
+    ["JUL", "07"],
+    ["AGOSTO", "08"],
+    ["AGO", "08"],
+    ["SEPTIEMBRE", "09"],
+    ["SETIEMBRE", "09"],
+    ["SEP", "09"],
+    ["OCTUBRE", "10"],
+    ["OCT", "10"],
+    ["NOVIEMBRE", "11"],
+    ["NOV", "11"],
+    ["DICIEMBRE", "12"],
+    ["DIC", "12"],
+  ];
+
+  const matchedMonth = monthEntries.find(([monthName]) =>
+    normalizedFileName.includes(monthName)
+  );
+
+  if (!matchedMonth) {
+    return null;
+  }
+
+  return `${year}-${matchedMonth[1]}`;
 }

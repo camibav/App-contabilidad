@@ -10,6 +10,7 @@ import {
 } from "../services/storage.service.js";
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
 import {
+  mergeMovementsById,
   normalizeProcessedFiles,
   normalizeStoredMovement,
 } from "../domain/movements.js";
@@ -40,14 +41,15 @@ export function loadSavedData({ elements, state, renderDashboard }) {
       })
     );
 
-    const dashboardStats = buildDashboardStats(normalizedMovements);
+    const deduplicatedMovements = mergeMovementsById([], normalizedMovements);
+    const dashboardStats = buildDashboardStats(deduplicatedMovements);
 
     state.data = {
       ...parsedData,
       fileName: fallbackSource,
       files: normalizedFiles,
       processedAt: parsedData.processedAt ?? new Date().toISOString(),
-      movements: normalizedMovements,
+      movements: deduplicatedMovements,
       summary: dashboardStats.summary,
     };
 
@@ -61,7 +63,7 @@ export function loadSavedData({ elements, state, renderDashboard }) {
 
     setStatus(
       elements,
-      `Saved data loaded. Files: ${state.data.files.length}. Movements: ${normalizedMovements.length}.`
+      `Saved data loaded. Files: ${state.data.files.length}. Movements: ${deduplicatedMovements.length}.`
     );
   } catch (error) {
     console.error(error);

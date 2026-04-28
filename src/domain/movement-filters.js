@@ -9,7 +9,7 @@ export function filterMovements(movements = [], filters = {}) {
       return false;
     }
 
-    if (filters.source && movement.source !== filters.source) {
+    if (filters.source && !movementMatchesSource(movement, filters.source)) {
       return false;
     }
 
@@ -31,4 +31,22 @@ export function filterMovements(movements = [], filters = {}) {
 
     return true;
   });
+}
+
+function movementMatchesSource(movement, selectedSource) {
+  const source = String(selectedSource ?? "").trim();
+
+  if (!source) {
+    return true;
+  }
+
+  if (movement.source === source) {
+    return true;
+  }
+
+  if (!Array.isArray(movement.sources)) {
+    return false;
+  }
+
+  return movement.sources.includes(source);
 }

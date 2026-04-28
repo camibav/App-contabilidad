@@ -6,6 +6,7 @@ import {
 } from "../ui/dashboard-ui.js";
 import { buildDashboardStats } from "../domain/dashboard-stats.js";
 import {
+  mergeMovementsById,
   normalizeProcessedFiles,
   normalizeStoredMovement,
 } from "../domain/movements.js";
@@ -174,14 +175,15 @@ function normalizeRestoredDashboardData(rawData, learnedCategoryRules = []) {
     })
   );
 
-  const dashboardStats = buildDashboardStats(normalizedMovements);
+  const deduplicatedMovements = mergeMovementsById([], normalizedMovements);
+  const dashboardStats = buildDashboardStats(deduplicatedMovements);
 
   return {
     ...rawData,
     fileName: fallbackSource,
     files: normalizedFiles,
     processedAt: rawData.processedAt ?? new Date().toISOString(),
-    movements: normalizedMovements,
+    movements: deduplicatedMovements,
     summary: dashboardStats.summary,
   };
 }
