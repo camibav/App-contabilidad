@@ -31,7 +31,7 @@ export function parseNuMovements(
 
   const movements = [];
   const movementRegex =
-    /^[^\d]*(\d{2})\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\s+(.+?)\s+([+-])\$?([\d.,]+)$/i;
+    /^[^\d]*(\d{1,2})\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\s+(.+?)\s+([+-])\s*\$?\s*([\d.,]+)$/i;
 
   for (const line of lines) {
     const match = line.match(movementRegex);
@@ -40,7 +40,8 @@ export function parseNuMovements(
       continue;
     }
 
-    const [, day, monthText, description, sign, rawAmount] = match;
+    const [, rawDay, monthText, description, sign, rawAmount] = match;
+    const day = rawDay.padStart(2, "0");
     const month = getMonthNumber(monthText);
     const date = `${statementYear}-${month}-${day}`;
     const monthKey = `${statementYear}-${month}`;
@@ -520,7 +521,7 @@ function buildMovementDedupeKey({ date, description, amount }) {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/[^a-z0-9]+/g, "")
     .replace(/^-+|-+$/g, "");
 }
 
@@ -530,7 +531,7 @@ function normalizeMovementSources(...sourceValues) {
   for (const value of sourceValues.flat()) {
     const source = String(value ?? "").trim();
 
-    if (!source || source === "Unknown source" || sources.includes(source)) {
+    if (!source || isUnknownSource(source) || sources.includes(source)) {
       continue;
     }
 
@@ -540,6 +541,12 @@ function normalizeMovementSources(...sourceValues) {
   return sources;
 }
 
+function isUnknownSource(source) {
+  const normalizedSource = normalizeText(source);
+
+  return normalizedSource === "UNKNOWN SOURCE" || normalizedSource === "ORIGEN DESCONOCIDO";
+}
+
 function isValidProcessedFileName(fileName) {
   const normalizedFileName = String(fileName ?? "").trim();
 
@@ -547,7 +554,7 @@ function isValidProcessedFileName(fileName) {
     return false;
   }
 
-  if (normalizedFileName === "Unknown source") {
+  if (isUnknownSource(normalizedFileName)) {
     return false;
   }
 

@@ -19,11 +19,7 @@ export async function extractEmbeddedPdfText(pdf, onStatus = () => {}) {
 
     const page = await pdf.getPage(pageNumber);
     const textContent = await page.getTextContent();
-
-    const pageText = textContent.items
-      .map((item) => (typeof item.str === "string" ? item.str : ""))
-      .filter(Boolean)
-      .join(" ");
+    const pageText = buildPageTextFromItems(textContent.items);
 
     if (pageText.trim()) {
       pagesText.push(`--- PAGE ${pageNumber} ---\n${pageText}`);
@@ -80,6 +76,49 @@ export async function extractTextWithOcr(pdf, onStatus = () => {}) {
   } finally {
     await worker.terminate();
   }
+}
+
+function buildPageTextFromItems(items = []) {
+  const rows = [];
+  const yTolerance = 2;
+
+  for (const item of items) {
+    if (typeof item.str !== "string" || !item.str.trim()) {
+      continue;
+    }
+
+    const x = Number(item.transform?.[4] ?? 0);
+    const y = Number(item.transform?.[5] ?? 0);
+
+    let row = rows.find((currentRow) => Math.abs(currentRow.y - y) <= yTolerance);
+
+    if (!row) {
+      row = {
+        y,
+        items: [],
+      };
+
+      rows.push(row);
+    }
+
+    row.items.push({
+      x,
+      text: item.str.trim(),
+    });
+  }
+
+  return rows
+    .sort((firstRow, secondRow) => secondRow.y - firstRow.y)
+    .map((row) =>
+      row.items
+        .sort((firstItem, secondItem) => firstItem.x - secondItem.x)
+        .map((item) => item.text)
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim()
+    )
+    .filter(Boolean)
+    .join("\n");
 }
 
 async function renderPageToCanvas(page, scale = 3) {

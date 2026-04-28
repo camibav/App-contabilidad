@@ -1,8 +1,8 @@
 import { formatCurrency } from "../utils/formatters.js";
 import { escapeHtml } from "../utils/html.js";
 
-export function renderIngresosVsGastosChart(elements, monthlyData = []) {
-  const container = elements.incomeVsGastosChart;
+export function renderIncomeVsExpensesChart(elements, monthlyData = []) {
+  const container = elements.incomeVsExpensesChart;
 
   if (!container) {
     return;
@@ -64,8 +64,8 @@ export function renderIngresosVsGastosChart(elements, monthlyData = []) {
   }
 }
 
-export function clearIngresosVsGastosChart(elements) {
-  renderIngresosVsGastosChart(elements, []);
+export function clearIncomeVsExpensesChart(elements) {
+  renderIncomeVsExpensesChart(elements, []);
 }
 
 function renderGroupedBarRow({ label, value, maxValue, type }) {

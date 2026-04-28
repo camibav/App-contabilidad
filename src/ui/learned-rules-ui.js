@@ -1,9 +1,9 @@
-import { formatCategoría } from "../utils/formatters.js";
+import { formatCategory } from "../utils/formatters.js";
 import { escapeHtml } from "../utils/html.js";
 
-export function renderLearnedCategoríaRulesPanel(elements, rules = []) {
-  const list = elements.learnedCategoríaRulesList;
-  const count = elements.learnedCategoríaRulesCount;
+export function renderLearnedCategoryRulesPanel(elements, rules = []) {
+  const list = elements.learnedCategoryRulesList;
+  const count = elements.learnedCategoryRulesCount;
 
   if (!list || !count) {
     return;
@@ -28,6 +28,7 @@ export function renderLearnedCategoríaRulesPanel(elements, rules = []) {
     const pattern = rule.pattern ?? "Patrón desconocido";
     const type = rule.type ?? "expense";
     const updatedAt = formatRuleDate(rule.updatedAt ?? rule.createdAt);
+    const ruleId = rule.id ?? "";
 
     item.innerHTML = `
       <div class="learned-rule-main">
@@ -41,7 +42,7 @@ export function renderLearnedCategoríaRulesPanel(elements, rules = []) {
 
       <div class="learned-rule-category">
         <span class="learned-rule-label">Categoría</span>
-        <strong>${escapeHtml(formatCategoría(category))}</strong>
+        <strong>${escapeHtml(formatCategory(category))}</strong>
       </div>
 
       <div class="learned-rule-date">
@@ -53,7 +54,7 @@ export function renderLearnedCategoríaRulesPanel(elements, rules = []) {
         <button
           class="secondary-button learned-rule-delete-button"
           type="button"
-          data-delete-learned-rule-id="${escapeHtml(rule.id)}"
+          data-delete-learned-rule-id="${escapeHtml(ruleId)}"
         >
           Eliminar
         </button>
@@ -64,8 +65,8 @@ export function renderLearnedCategoríaRulesPanel(elements, rules = []) {
   }
 }
 
-export function clearLearnedCategoríaRulesPanel(elements) {
-  renderLearnedCategoríaRulesPanel(elements, []);
+export function clearLearnedCategoryRulesPanel(elements) {
+  renderLearnedCategoryRulesPanel(elements, []);
 }
 
 function renderLearnedRulesEmptyState(container) {
