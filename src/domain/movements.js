@@ -131,24 +131,29 @@ export function mergeProcessedFiles(previousFiles, newFileName, options = {}) {
   const filesMap = new Map();
 
   for (const file of files) {
-    if (!file?.name) {
+    if (!isValidProcessedFileName(file?.name)) {
       continue;
     }
 
     filesMap.set(file.name, file);
   }
 
-  if (options.legacyFileName && !filesMap.has(options.legacyFileName)) {
+  if (
+    isValidProcessedFileName(options.legacyFileName) &&
+    !filesMap.has(options.legacyFileName)
+  ) {
     filesMap.set(options.legacyFileName, {
       name: options.legacyFileName,
       processedAt: options.legacyProcessedAt ?? null,
     });
   }
 
-  filesMap.set(newFileName, {
-    name: newFileName,
-    processedAt: options.currentProcessedAt ?? new Date().toISOString(),
-  });
+  if (isValidProcessedFileName(newFileName)) {
+    filesMap.set(newFileName, {
+      name: newFileName,
+      processedAt: options.currentProcessedAt ?? new Date().toISOString(),
+    });
+  }
 
   return Array.from(filesMap.values());
 }
@@ -158,7 +163,7 @@ export function normalizeProcessedFiles(parsedData) {
 
   if (Array.isArray(parsedData.files)) {
     for (const file of parsedData.files) {
-      if (!file?.name) {
+      if (!isValidProcessedFileName(file?.name)) {
         continue;
       }
 
@@ -169,7 +174,10 @@ export function normalizeProcessedFiles(parsedData) {
     }
   }
 
-  if (parsedData.fileName && !filesMap.has(parsedData.fileName)) {
+  if (
+    isValidProcessedFileName(parsedData.fileName) &&
+    !filesMap.has(parsedData.fileName)
+  ) {
     filesMap.set(parsedData.fileName, {
       name: parsedData.fileName,
       processedAt: parsedData.processedAt ?? null,
@@ -177,6 +185,36 @@ export function normalizeProcessedFiles(parsedData) {
   }
 
   return Array.from(filesMap.values());
+}
+
+export function removeProcessedFileFromDashboardData(data, fileNameToRemove) {
+  const targetFileName = String(fileNameToRemove ?? "").trim();
+
+  if (!targetFileName || !data || typeof data !== "object") {
+    return data;
+  }
+
+  const files = normalizeProcessedFiles(data).filter(
+    (file) => file.name !== targetFileName
+  );
+
+  const movements = Array.isArray(data.movements)
+    ? data.movements
+        .map((movement) =>
+          removeSourceFromMovement(movement, targetFileName, files)
+        )
+        .filter(Boolean)
+    : [];
+
+  const fallbackFileName = files.at(-1)?.name ?? null;
+
+  return {
+    ...data,
+    fileName: fallbackFileName,
+    files,
+    movements,
+    processedAt: new Date().toISOString(),
+  };
 }
 
 export function normalizeStoredMovement(
@@ -276,6 +314,50 @@ function normalizeMovementForMerge(movement) {
     ...movement,
     dedupeKey,
     sources: normalizeMovementSources(movement.sources, source),
+  };
+}
+
+function removeSourceFromMovement(movement, fileNameToRemove, remainingFiles = []) {
+  if (!movement || typeof movement !== "object") {
+    return null;
+  }
+
+  const currentSources = normalizeMovementSources(
+    movement.sources,
+    movement.source
+  );
+
+  const updatedSources = currentSources.filter(
+    (source) => source !== fileNameToRemove
+  );
+
+  if (!updatedSources.length) {
+    return null;
+  }
+
+  const knownRemainingFileNames = remainingFiles.map((file) => file.name);
+  const sources = updatedSources.filter((sourceName) =>
+    knownRemainingFileNames.length
+      ? knownRemainingFileNames.includes(sourceName)
+      : true
+  );
+
+  if (!sources.length) {
+    return null;
+  }
+
+  const source = sources[0];
+  const fallbackYear = String(movement.date ?? "").slice(0, 4);
+  const statementMonth =
+    inferStatementMonthFromFileName(source, fallbackYear) ??
+    movement.statementMonth ??
+    null;
+
+  return {
+    ...movement,
+    source,
+    sources,
+    statementMonth,
   };
 }
 
@@ -448,7 +530,7 @@ function normalizeMovementSources(...sourceValues) {
   for (const value of sourceValues.flat()) {
     const source = String(value ?? "").trim();
 
-    if (!source || sources.includes(source)) {
+    if (!source || source === "Unknown source" || sources.includes(source)) {
       continue;
     }
 
@@ -456,6 +538,20 @@ function normalizeMovementSources(...sourceValues) {
   }
 
   return sources;
+}
+
+function isValidProcessedFileName(fileName) {
+  const normalizedFileName = String(fileName ?? "").trim();
+
+  if (!normalizedFileName) {
+    return false;
+  }
+
+  if (normalizedFileName === "Unknown source") {
+    return false;
+  }
+
+  return normalizedFileName.toLowerCase().endsWith(".pdf");
 }
 
 function inferStatementMonthFromFileName(fileName, fallbackYear) {
