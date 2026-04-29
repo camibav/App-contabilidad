@@ -33,7 +33,7 @@
 }
 
 .fixed-variable-bar-segment--fixed {
-  background: var(--color-primary);
+  background: var(--color-brand);
 }
 
 .fixed-variable-bar-segment--variable {
@@ -56,7 +56,7 @@
 }
 
 .fixed-variable-card--fixed {
-  border-left: 5px solid var(--color-primary);
+  border-left: 5px solid var(--color-brand);
 }
 
 .fixed-variable-card--variable {
@@ -101,7 +101,6 @@
 .fixed-variable-empty-state {
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
   padding: 24px 16px;
   color: var(--color-text-muted);
   text-align: center;

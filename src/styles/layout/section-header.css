@@ -3,11 +3,11 @@
   justify-content: space-between;
   gap: 16px;
   align-items: flex-start;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .section-header h2 {
-  margin: 0 0 6px;
+  margin: 0 0 7px;
 }
 
 .section-actions {

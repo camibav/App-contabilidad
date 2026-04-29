@@ -20,7 +20,6 @@
 
 .processed-file-item--empty {
   color: var(--color-text-muted);
-  box-shadow: none;
 }
 
 .processed-file-name {

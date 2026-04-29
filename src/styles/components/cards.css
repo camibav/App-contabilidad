@@ -1,20 +1,29 @@
 .card {
-  background: var(--color-surface);
+  background: rgb(255 255 255 / 92%);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: clamp(18px, 2.4vw, 26px);
+  margin-bottom: 22px;
   box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 }
 
 .card:hover {
   border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-md);
 }
 
-@media (max-width: 560px) {
-  .card {
-    padding: 18px;
-    margin-bottom: 18px;
-    border-radius: var(--radius-lg);
-  }
+.card--compact {
+  padding: 18px;
+}
+
+.deferred-panel:has([aria-live]:empty),
+.deferred-panel:has(.recurring-expenses-list:empty),
+.deferred-panel:has(.excluded-recurring-expenses-list:empty),
+.deferred-panel:has(.fixed-variable-summary:empty),
+.deferred-panel:has(.learned-rules-list:empty) {
+  display: none;
 }

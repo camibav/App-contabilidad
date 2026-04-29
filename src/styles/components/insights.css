@@ -15,7 +15,6 @@
 .insight-card--empty {
   grid-column: 1 / -1;
   color: var(--color-text-muted);
-  box-shadow: none;
 }
 
 .insight-label {
@@ -23,9 +22,9 @@
   margin-bottom: 8px;
   color: var(--color-text-muted);
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 850;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .insight-value {

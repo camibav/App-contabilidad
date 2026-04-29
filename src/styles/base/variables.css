@@ -1,73 +1,65 @@
 :root {
-  --color-background: #f4f4f5;
+  --color-background: #f6f3fb;
+  --color-background-strong: #eee7f8;
   --color-surface: #ffffff;
-  --color-surface-muted: #fafafa;
+  --color-surface-muted: #faf8fd;
+  --color-surface-elevated: #ffffff;
+
   --color-text: #18181b;
   --color-text-soft: #52525b;
   --color-text-muted: #71717a;
   --color-placeholder: #a1a1aa;
-  --color-border: #e4e4e7;
-  --color-border-strong: #d4d4d8;
+
+  --color-border: #e7e2ee;
+  --color-border-strong: #d8d0e4;
+
   --color-dark: #18181b;
   --color-dark-hover: #27272a;
 
-  /* Dashboard action colors */
-  --color-primary: #0057ff;
-  --color-primary-soft: #eaf1ff;
-  --color-primary-subtle: #f8fbff;
-  --color-primary-strong: #003ea8;
-  --color-primary-dark: var(--color-primary-strong);
-
-  /* Nu-inspired header brand colors */
   --color-brand: #820ad1;
-  --color-brand-dark: #5b0b96;
-  --color-brand-soft: #f3e8ff;
-  --color-brand-subtle: #faf5ff;
+  --color-brand-dark: #5b0796;
+  --color-brand-soft: #f1e4fb;
+  --color-brand-soft-strong: #e7d0f8;
 
-  --color-danger: #dc2626;
-  --color-danger-soft: #fee2e2;
-  --color-danger-strong: #991b1b;
-
-  --color-warning: #facc15;
-  --color-warning-soft: #fef9c3;
-  --color-warning-strong: #854d0e;
-
-  --color-info: #0284c7;
-  --color-info-soft: #e0f2fe;
-  --color-info-strong: #075985;
-
-  --color-accent: #db2777;
-  --color-accent-soft: #fce7f3;
-  --color-accent-strong: #9d174d;
-
-  --color-cyan: #06b6d4;
-  --color-cyan-soft: #ecfeff;
-  --color-cyan-strong: #0e7490;
+  --color-primary: var(--color-brand);
+  --color-primary-soft: var(--color-brand-soft);
+  --color-primary-strong: var(--color-brand-dark);
+  --color-primary-dark: var(--color-brand-dark);
 
   --color-income: #166534;
   --color-income-bg: #dcfce7;
   --color-expense: #991b1b;
   --color-expense-bg: #fee2e2;
 
-  --chart-color-1: var(--color-primary);
-  --chart-color-2: var(--color-danger);
-  --chart-color-3: var(--color-warning);
-  --chart-color-4: var(--color-info);
-  --chart-color-5: var(--color-accent);
-  --chart-color-6: var(--color-dark);
+  --color-danger: #dc2626;
+  --color-danger-soft: #fee2e2;
+  --color-warning: #facc15;
+  --color-warning-soft: #fef9c3;
+  --color-info: #0284c7;
+  --color-info-soft: #e0f2fe;
+  --color-accent: #db2777;
+  --color-accent-soft: #fce7f3;
+
+  --chart-color-1: var(--color-brand);
+  --chart-color-2: #ef4444;
+  --chart-color-3: #eab308;
+  --chart-color-4: #0284c7;
+  --chart-color-5: #db2777;
+  --chart-color-6: #111827;
 
   --radius-sm: 8px;
   --radius-md: 10px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-lg: 14px;
+  --radius-xl: 22px;
   --radius-pill: 999px;
   --radius-full: var(--radius-pill);
 
-  --shadow-sm: 0 1px 2px rgb(15 23 42 / 6%);
-  --shadow-md: 0 8px 24px rgb(15 23 42 / 8%);
-  --shadow-lg: 0 24px 70px rgb(15 23 42 / 12%);
+  --shadow-sm: 0 1px 2px rgb(24 24 27 / 6%);
+  --shadow-md: 0 12px 30px rgb(76 29 149 / 10%);
+  --shadow-lg: 0 24px 60px rgb(76 29 149 / 14%);
 
   --transition-fast: 160ms ease;
+  --transition-base: 220ms ease;
 
   --font-family-base: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 

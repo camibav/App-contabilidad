@@ -47,32 +47,59 @@
       </aside>
     </header>
 
-    <section class="card">
-      <label for="pdfInput">Selecciona uno o varios extractos PDF de Nu Bank</label>
-      <input id="pdfInput" type="file" accept="application/pdf" multiple />
+    <nav class="dashboard-nav" aria-label="Navegación del dashboard">
+      <a href="#upload-section">Carga</a>
+      <a href="#summary-section">Resumen</a>
+      <a href="#filters-section">Filtros</a>
+      <a href="#charts-section">Gráficas</a>
+      <a href="#categories-section">Categorías</a>
+      <a href="#classification-section">Clasificación</a>
+      <a href="#movements-section">Movimientos</a>
+    </nav>
 
-      <p id="status" class="status">No se ha seleccionado ningún PDF.</p>
+    <section id="upload-section" class="card upload-card">
+      <div class="upload-card-main">
+        <span class="upload-card-icon" aria-hidden="true">PDF</span>
+
+        <div>
+          <label class="upload-card-title" for="pdfInput">
+            Cargar extractos Nu Bank
+          </label>
+          <p class="upload-card-description">
+            Selecciona uno o varios archivos PDF para actualizar el dashboard, mantener el historial acumulado y revisar los movimientos detectados.
+          </p>
+        </div>
+      </div>
+
+      <div class="upload-card-control">
+        <input id="pdfInput" type="file" accept="application/pdf" multiple />
+        <p id="status" class="status">No se ha seleccionado ningún PDF.</p>
+      </div>
     </section>
 
-    <section class="summary-grid" aria-label="Resumen acumulado">
-      <article class="summary-card">
+    <section id="summary-section" class="summary-grid" aria-label="Resumen acumulado">
+      <article class="summary-card summary-card--income">
         <span class="summary-label">Ingresos</span>
         <strong id="incomeSummary" class="summary-value">$ 0</strong>
+        <span class="summary-hint">Entradas detectadas</span>
       </article>
 
-      <article class="summary-card">
+      <article class="summary-card summary-card--expense">
         <span class="summary-label">Gastos</span>
         <strong id="expensesSummary" class="summary-value">$ 0</strong>
+        <span class="summary-hint">Salidas detectadas</span>
       </article>
 
-      <article class="summary-card">
+      <article class="summary-card summary-card--balance">
         <span class="summary-label">Balance neto</span>
         <strong id="balanceSummary" class="summary-value">$ 0</strong>
+        <span class="summary-hint">Resultado filtrado</span>
       </article>
 
-      <article class="summary-card">
+      <article class="summary-card summary-card--movements">
         <span class="summary-label">Movimientos</span>
         <strong id="totalMovementsSummary" class="summary-value">0</strong>
+        <span class="summary-hint">Transacciones leídas</span>
       </article>
     </section>
 
@@ -89,7 +116,7 @@
       <ul id="processedFilesList" class="processed-files-list"></ul>
     </section>
 
-    <section class="card">
+    <section id="filters-section" class="card filters-card">
       <div class="section-header">
         <div>
           <h2>Filtros</h2>
@@ -162,7 +189,7 @@
       ></div>
     </section>
 
-    <section class="card">
+    <section id="charts-section" class="card">
       <div class="section-header">
         <div>
           <h2>Gráficas</h2>
@@ -227,7 +254,7 @@
       </div>
     </section>
 
-    <section class="card">
+    <section id="categories-section" class="card">
       <div class="section-header">
         <div>
           <h2>Desglose por categoría</h2>
@@ -261,7 +288,7 @@
       ></div>
     </section>
 
-    <section class="card">
+    <section class="card deferred-panel">
       <div class="section-header">
         <div>
           <h2>Gastos recurrentes</h2>
@@ -278,7 +305,7 @@
       ></div>
     </section>
 
-    <section class="card">
+    <section class="card deferred-panel">
       <div class="section-header">
         <div>
           <h2>Gastos recurrentes excluidos</h2>
@@ -295,7 +322,7 @@
       ></div>
     </section>
 
-    <section class="card">
+    <section class="card deferred-panel">
       <div class="section-header">
         <div>
           <h2>Gastos fijos vs variables</h2>
@@ -312,7 +339,7 @@
       ></div>
     </section>
 
-    <section class="card">
+    <section id="classification-section" class="card">
       <div class="section-header">
         <div>
           <h2>Movimientos sin clasificar</h2>
@@ -329,7 +356,7 @@
       ></div>
     </section>
 
-    <section class="card">
+    <section class="card deferred-panel">
       <div class="section-header">
         <div>
           <h2>Reglas de categoría aprendidas</h2>
@@ -354,7 +381,7 @@
       ></div>
     </section>
 
-    <section class="card">
+    <section id="movements-section" class="card">
       <div class="section-header">
         <div>
           <h2>Movimientos procesados</h2>

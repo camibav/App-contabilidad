@@ -1,68 +1,43 @@
 label {
   display: block;
-  color: var(--color-text);
-  font-weight: 700;
+  font-weight: 800;
   margin-bottom: 12px;
 }
 
 input:not([hidden]),
 select {
   display: block;
-  max-width: 100%;
-}
-
-input:not([hidden]) {
   margin-bottom: 16px;
 }
 
-input[type="file"] {
-  width: 100%;
-  border: 1px dashed var(--color-border-strong);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-muted);
-  color: var(--color-text-soft);
-  padding: 16px;
-  cursor: pointer;
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    color var(--transition-fast);
-}
-
-input[type="file"]:hover {
-  border-color: var(--color-primary);
-  background: var(--color-primary-soft);
+input:not([hidden]),
+select,
+.category-select {
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface);
   color: var(--color-text);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast);
 }
 
-input[type="file"]:focus-visible,
-select:focus-visible,
-input:focus-visible {
-  outline: 3px solid var(--color-primary-soft);
-  outline-offset: 2px;
-  border-color: var(--color-primary);
+input:not([hidden]):focus,
+select:focus,
+.category-select:focus {
+  border-color: var(--color-brand);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-brand-soft);
 }
 
 .category-select {
   width: 100%;
   min-width: 130px;
-  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  color: var(--color-text);
-  padding: 6px 10px;
+  padding: 7px 11px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-.category-select:hover {
-  border-color: var(--color-text-soft);
-  background: var(--color-surface-muted);
 }
 
 .category-control {

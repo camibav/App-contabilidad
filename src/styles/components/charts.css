@@ -25,7 +25,7 @@
   margin: 0 0 6px;
   color: var(--color-text);
   font-size: 18px;
-  font-weight: 900;
+  font-weight: 800;
 }
 
 .chart-header p {
@@ -86,17 +86,33 @@
   box-shadow: inset 0 0 0 1px rgb(17 17 17 / 18%);
 }
 
-.chart-bar-row:nth-child(6n + 1) .chart-bar-fill { background: var(--chart-color-1); }
-.chart-bar-row:nth-child(6n + 2) .chart-bar-fill { background: var(--chart-color-2); }
-.chart-bar-row:nth-child(6n + 3) .chart-bar-fill { background: var(--chart-color-3); }
-.chart-bar-row:nth-child(6n + 4) .chart-bar-fill { background: var(--chart-color-4); }
-.chart-bar-row:nth-child(6n + 5) .chart-bar-fill { background: var(--chart-color-5); }
-.chart-bar-row:nth-child(6n) .chart-bar-fill { background: var(--chart-color-6); }
+.chart-bar-row:nth-child(6n + 1) .chart-bar-fill {
+  background: var(--chart-color-1);
+}
+
+.chart-bar-row:nth-child(6n + 2) .chart-bar-fill {
+  background: var(--chart-color-2);
+}
+
+.chart-bar-row:nth-child(6n + 3) .chart-bar-fill {
+  background: var(--chart-color-3);
+}
+
+.chart-bar-row:nth-child(6n + 4) .chart-bar-fill {
+  background: var(--chart-color-4);
+}
+
+.chart-bar-row:nth-child(6n + 5) .chart-bar-fill {
+  background: var(--chart-color-5);
+}
+
+.chart-bar-row:nth-child(6n) .chart-bar-fill {
+  background: var(--chart-color-6);
+}
 
 .chart-empty-state {
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
   padding: 24px 16px;
   color: var(--color-text-muted);
   text-align: center;
@@ -123,12 +139,12 @@
 }
 
 .donut-chart {
-  --donut-segment-1: var(--chart-color-1);
-  --donut-segment-2: var(--chart-color-2);
-  --donut-segment-3: var(--chart-color-3);
-  --donut-segment-4: var(--chart-color-4);
-  --donut-segment-5: var(--chart-color-5);
-  --donut-segment-6: var(--chart-color-6);
+  --donut-segment-1: var(--color-brand);
+  --donut-segment-2: var(--color-danger);
+  --donut-segment-3: var(--color-warning);
+  --donut-segment-4: var(--color-info);
+  --donut-segment-5: var(--color-accent);
+  --donut-segment-6: var(--color-dark);
 }
 
 .donut-chart-content {
@@ -151,7 +167,6 @@
   border: 2px solid var(--color-border-strong);
   border-radius: 50%;
   background: conic-gradient(var(--donut-segments));
-  box-shadow: var(--shadow-sm);
 }
 
 .donut-chart-hole {
@@ -245,6 +260,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .grouped-bar-header {
@@ -267,9 +283,17 @@
   white-space: nowrap;
 }
 
-.grouped-bar-balance--positive { color: var(--color-primary); }
-.grouped-bar-balance--negative { color: var(--color-danger); }
-.grouped-bar-balance--neutral { color: var(--color-text-soft); }
+.grouped-bar-balance--positive {
+  color: var(--color-brand);
+}
+
+.grouped-bar-balance--negative {
+  color: var(--color-danger);
+}
+
+.grouped-bar-balance--neutral {
+  color: var(--color-text-soft);
+}
 
 .grouped-bar-row {
   display: grid;
@@ -299,8 +323,13 @@
   border-radius: inherit;
 }
 
-.grouped-bar-fill--income { background: var(--color-primary); }
-.grouped-bar-fill--expense { background: var(--color-danger); }
+.grouped-bar-fill--income {
+  background: var(--chart-color-1);
+}
+
+.grouped-bar-fill--expense {
+  background: var(--chart-color-2);
+}
 
 .grouped-bar-value {
   color: var(--color-text);

@@ -2,9 +2,9 @@
   border: 1px solid var(--color-border-strong);
   background: var(--color-surface);
   color: var(--color-text);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  font-weight: 700;
+  border-radius: var(--radius-pill);
+  padding: 10px 15px;
+  font-weight: 800;
   cursor: pointer;
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
@@ -17,34 +17,36 @@
 }
 
 .secondary-button:hover:not(:disabled) {
-  border-color: var(--color-text-soft);
-  background: var(--color-background);
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
+  color: var(--color-brand-dark);
 }
 
 .secondary-button:active:not(:disabled) {
   transform: translateY(1px);
-  box-shadow: none;
 }
 
 .secondary-button:focus-visible {
-  outline: 3px solid var(--color-primary-soft);
+  border-color: var(--color-brand);
+  outline: 3px solid var(--color-brand-soft-strong);
   outline-offset: 2px;
-  border-color: var(--color-primary);
 }
 
 .secondary-button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
 .export-button {
-  border-color: var(--color-dark);
-  background: var(--color-dark);
+  border-color: var(--color-brand);
+  background: var(--color-brand);
   color: var(--color-surface);
 }
 
 .export-button:hover:not(:disabled) {
-  background: var(--color-dark-hover);
+  border-color: var(--color-brand-dark);
+  background: var(--color-brand-dark);
+  color: var(--color-surface);
 }
 
 .export-button:disabled,
@@ -59,11 +61,6 @@
 .backup-button,
 .restore-button {
   border-color: var(--color-text-soft);
-}
-
-.backup-button:hover:not(:disabled),
-.restore-button:hover:not(:disabled) {
-  background: var(--color-background);
 }
 
 @media (max-width: 700px) {

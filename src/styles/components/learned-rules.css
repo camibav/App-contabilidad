@@ -27,14 +27,6 @@
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
   box-shadow: var(--shadow-sm);
-  transition:
-    background var(--transition-fast),
-    border-color var(--transition-fast);
-}
-
-.learned-rule-item:hover {
-  border-color: var(--color-border-strong);
-  background: var(--color-surface);
 }
 
 .learned-rule-main {
@@ -90,14 +82,13 @@
   color: var(--color-danger);
 }
 
-.learned-rule-delete-button:hover:not(:disabled) {
+.learned-rule-delete-button:hover {
   background: var(--color-danger-soft);
 }
 
 .learned-rules-empty-state {
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
   padding: 24px 16px;
   color: var(--color-text-muted);
   text-align: center;
