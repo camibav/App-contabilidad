@@ -1,4 +1,11 @@
 .container {
   width: var(--container-width);
-  margin: 40px auto;
+  margin: 48px auto;
+}
+
+@media (max-width: 560px) {
+  .container {
+    width: min(100% - 32px, var(--container-width));
+    margin: 28px auto;
+  }
 }

@@ -45,21 +45,21 @@
 }
 
 .category-source-badge--manual {
-  border-color: #0057ff;
-  background: #eaf1ff;
-  color: #003ea8;
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
 }
 
 .category-source-badge--manual-learning {
-  border-color: #ff00a8;
-  background: #fff0fa;
-  color: #a8006f;
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent-strong);
 }
 
 .category-source-badge--auto {
-  border-color: #00c2ff;
-  background: #e6faff;
-  color: #006b8f;
+  border-color: var(--color-info);
+  background: var(--color-info-soft);
+  color: var(--color-info-strong);
 }
 
 .category-source-badge--default {

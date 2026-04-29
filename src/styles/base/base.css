@@ -1,21 +1,28 @@
 body {
   margin: 0;
   font-family: var(--font-family-base);
-  background: var(--color-background);
+  line-height: 1.5;
+  background:
+    radial-gradient(circle at top left, rgb(0 87 255 / 6%), transparent 32rem),
+    var(--color-background);
   color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
 }
 
 h1 {
   margin-bottom: 24px;
+  letter-spacing: -0.03em;
 }
 
-label {
-  display: block;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-input {
-  display: block;
-  margin-bottom: 16px;
+h2,
+h3 {
+  letter-spacing: -0.02em;
 }

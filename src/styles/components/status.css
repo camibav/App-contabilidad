@@ -1,3 +1,10 @@
 .status {
-  color: var(--color-text-soft);
+  margin: 0;
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-strong);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 700;
 }

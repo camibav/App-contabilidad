@@ -15,10 +15,12 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface-muted);
+  box-shadow: var(--shadow-sm);
 }
 
 .processed-file-item--empty {
   color: var(--color-text-muted);
+  box-shadow: none;
 }
 
 .processed-file-name {

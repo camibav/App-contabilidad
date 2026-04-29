@@ -13,6 +13,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
+  box-shadow: var(--shadow-sm);
 }
 
 .fixed-variable-bar {
@@ -32,11 +33,11 @@
 }
 
 .fixed-variable-bar-segment--fixed {
-  background: #0057ff;
+  background: var(--color-primary);
 }
 
 .fixed-variable-bar-segment--variable {
-  background: #ff0000;
+  background: var(--color-danger);
 }
 
 .fixed-variable-grid {
@@ -51,22 +52,23 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
+  box-shadow: var(--shadow-sm);
 }
 
 .fixed-variable-card--fixed {
-  border-left: 5px solid #0057ff;
+  border-left: 5px solid var(--color-primary);
 }
 
 .fixed-variable-card--variable {
-  border-left: 5px solid #ff0000;
+  border-left: 5px solid var(--color-danger);
 }
 
 .fixed-variable-card--estimate {
-  border-left: 5px solid #ffd400;
+  border-left: 5px solid var(--color-warning);
 }
 
 .fixed-variable-card--neutral {
-  border-left: 5px solid #111111;
+  border-left: 5px solid var(--color-dark);
 }
 
 .fixed-variable-label {
@@ -99,6 +101,7 @@
 .fixed-variable-empty-state {
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-md);
+  background: var(--color-surface);
   padding: 24px 16px;
   color: var(--color-text-muted);
   text-align: center;

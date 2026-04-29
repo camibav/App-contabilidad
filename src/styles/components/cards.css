@@ -1,7 +1,20 @@
 .card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 20px;
-  margin-bottom: 20px;
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  border-color: var(--color-border-strong);
+}
+
+@media (max-width: 560px) {
+  .card {
+    padding: 18px;
+    margin-bottom: 18px;
+    border-radius: var(--radius-lg);
+  }
 }

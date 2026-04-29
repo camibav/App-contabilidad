@@ -19,6 +19,15 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
+  box-shadow: var(--shadow-sm);
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.recurring-expense-item:hover {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
 }
 
 .recurring-expense-main {
@@ -89,22 +98,23 @@
 }
 
 .recurring-expense-value--primary {
-  color: #0057ff;
+  color: var(--color-primary);
 }
 
 .recurring-expense-action {
   width: fit-content;
-  border-color: #ff0000;
-  color: #ff0000;
+  border-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
-.recurring-expense-action:hover {
-  background: #fee2e2;
+.recurring-expense-action:hover:not(:disabled) {
+  background: var(--color-danger-soft);
 }
 
 .recurring-expense-empty-state {
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-md);
+  background: var(--color-surface);
   padding: 24px 16px;
   color: var(--color-text-muted);
   text-align: center;

@@ -10,6 +10,7 @@
   border-radius: var(--radius-lg);
   background: var(--color-surface-muted);
   padding: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .chart-card--wide {
@@ -24,7 +25,7 @@
   margin: 0 0 6px;
   color: var(--color-text);
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .chart-header p {
@@ -81,37 +82,21 @@
   width: var(--bar-width, 0%);
   height: 100%;
   border-radius: inherit;
-  background: #0057ff;
+  background: var(--chart-color-1);
   box-shadow: inset 0 0 0 1px rgb(17 17 17 / 18%);
 }
 
-.chart-bar-row:nth-child(6n + 1) .chart-bar-fill {
-  background: #0057ff;
-}
-
-.chart-bar-row:nth-child(6n + 2) .chart-bar-fill {
-  background: #ff0000;
-}
-
-.chart-bar-row:nth-child(6n + 3) .chart-bar-fill {
-  background: #ffd400;
-}
-
-.chart-bar-row:nth-child(6n + 4) .chart-bar-fill {
-  background: #00c2ff;
-}
-
-.chart-bar-row:nth-child(6n + 5) .chart-bar-fill {
-  background: #ff00a8;
-}
-
-.chart-bar-row:nth-child(6n) .chart-bar-fill {
-  background: #111111;
-}
+.chart-bar-row:nth-child(6n + 1) .chart-bar-fill { background: var(--chart-color-1); }
+.chart-bar-row:nth-child(6n + 2) .chart-bar-fill { background: var(--chart-color-2); }
+.chart-bar-row:nth-child(6n + 3) .chart-bar-fill { background: var(--chart-color-3); }
+.chart-bar-row:nth-child(6n + 4) .chart-bar-fill { background: var(--chart-color-4); }
+.chart-bar-row:nth-child(6n + 5) .chart-bar-fill { background: var(--chart-color-5); }
+.chart-bar-row:nth-child(6n) .chart-bar-fill { background: var(--chart-color-6); }
 
 .chart-empty-state {
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-md);
+  background: var(--color-surface);
   padding: 24px 16px;
   color: var(--color-text-muted);
   text-align: center;
@@ -138,12 +123,12 @@
 }
 
 .donut-chart {
-  --donut-segment-1: #0057ff;
-  --donut-segment-2: #ff0000;
-  --donut-segment-3: #ffd400;
-  --donut-segment-4: #00c2ff;
-  --donut-segment-5: #ff00a8;
-  --donut-segment-6: #111111;
+  --donut-segment-1: var(--chart-color-1);
+  --donut-segment-2: var(--chart-color-2);
+  --donut-segment-3: var(--chart-color-3);
+  --donut-segment-4: var(--chart-color-4);
+  --donut-segment-5: var(--chart-color-5);
+  --donut-segment-6: var(--chart-color-6);
 }
 
 .donut-chart-content {
@@ -166,6 +151,7 @@
   border: 2px solid var(--color-border-strong);
   border-radius: 50%;
   background: conic-gradient(var(--donut-segments));
+  box-shadow: var(--shadow-sm);
 }
 
 .donut-chart-hole {
@@ -281,17 +267,9 @@
   white-space: nowrap;
 }
 
-.grouped-bar-balance--positive {
-  color: #0057ff;
-}
-
-.grouped-bar-balance--negative {
-  color: #ff0000;
-}
-
-.grouped-bar-balance--neutral {
-  color: var(--color-text-soft);
-}
+.grouped-bar-balance--positive { color: var(--color-primary); }
+.grouped-bar-balance--negative { color: var(--color-danger); }
+.grouped-bar-balance--neutral { color: var(--color-text-soft); }
 
 .grouped-bar-row {
   display: grid;
@@ -321,13 +299,8 @@
   border-radius: inherit;
 }
 
-.grouped-bar-fill--income {
-  background: #0057ff;
-}
-
-.grouped-bar-fill--expense {
-  background: #ff0000;
-}
+.grouped-bar-fill--income { background: var(--color-primary); }
+.grouped-bar-fill--expense { background: var(--color-danger); }
 
 .grouped-bar-value {
   color: var(--color-text);
