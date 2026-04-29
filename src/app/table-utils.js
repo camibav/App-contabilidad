@@ -1,5 +1,6 @@
 const ALLOWED_PAGE_SIZES = [5, 10, 50, 100];
 const ALLOWED_SORT_KEYS = ["date", "type", "amount"];
+const SORT_LOCALE = "es-CO";
 
 export function getPaginationState(totalItems, paginationState) {
   const pageSize = normalizePageSize(paginationState.pageSize);
@@ -73,7 +74,7 @@ function compareMovements(firstMovement, secondMovement, sortKey) {
     return firstValue - secondValue;
   }
 
-  return String(firstValue).localeCompare(String(secondValue), "en", {
+  return String(firstValue).localeCompare(String(secondValue), SORT_LOCALE, {
     numeric: true,
     sensitivity: "base",
   });

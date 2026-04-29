@@ -1,6 +1,17 @@
 import { setStatus } from "../ui/dashboard-ui.js";
 import { normalizePageSize, updateTableSortState } from "./table-utils.js";
 
+const SORT_KEY_LABELS_ES = {
+  date: "fecha",
+  type: "tipo",
+  amount: "monto",
+};
+
+const SORT_DIRECTION_LABELS_ES = {
+  asc: "ascendente",
+  desc: "descendente",
+};
+
 export function setupTablePaginationListeners({ elements, state, renderDashboard }) {
   elements.pageSizeSelect.addEventListener("change", (event) =>
     handlePageSizeChange({ event, elements, state, renderDashboard })
@@ -78,9 +89,12 @@ function handleTableSortChange({ event, elements, state, renderDashboard }) {
   state.tablePagination.page = 1;
 
   const { pagination } = renderDashboard();
+  const sortLabel = SORT_KEY_LABELS_ES[sortKey] ?? sortKey;
+  const directionLabel =
+    SORT_DIRECTION_LABELS_ES[state.tableSort.direction] ?? state.tableSort.direction;
 
   setStatus(
     elements,
-    `Table sorted by ${sortKey} ${state.tableSort.direction}. Página ${pagination.page} de ${pagination.totalPages}.`
+    `Tabla ordenada por ${sortLabel} en orden ${directionLabel}. Página ${pagination.page} de ${pagination.totalPages}.`
   );
 }

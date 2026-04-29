@@ -1,36 +1,39 @@
+import { CATEGORY_SOURCE_LABELS_ES } from "../config/translations.js";
+import { formatCategory, formatMovementType } from "../utils/formatters.js";
+
 const CSV_DELIMITER = ";";
 
 const MOVEMENT_CSV_COLUMNS = [
   {
-    header: "date",
+    header: "fecha",
     getValue: (movement) => movement.date ?? "",
   },
   {
-    header: "month",
+    header: "mes",
     getValue: (movement) => movement.month ?? "",
   },
   {
-    header: "source",
-    getValue: (movement) => movement.source ?? "Unknown source",
+    header: "archivo",
+    getValue: (movement) => movement.source ?? "Origen desconocido",
   },
   {
-    header: "description",
-    getValue: (movement) => movement.description ?? "Unknown movement",
+    header: "descripcion",
+    getValue: (movement) => movement.description ?? "Movimiento desconocido",
   },
   {
-    header: "category",
-    getValue: (movement) => movement.category ?? "uncategorized",
+    header: "categoria",
+    getValue: (movement) => formatCategory(movement.category ?? "uncategorized"),
   },
   {
-    header: "category_source",
-    getValue: (movement) => movement.categorySource ?? "unknown",
+    header: "origen_categoria",
+    getValue: (movement) => formatCategorySource(movement.categorySource),
   },
   {
-    header: "type",
-    getValue: (movement) => movement.type ?? "unknown",
+    header: "tipo",
+    getValue: (movement) => formatMovementType(movement.type),
   },
   {
-    header: "amount",
+    header: "monto",
     getValue: (movement) => Number(movement.amount ?? 0),
   },
   {
@@ -71,7 +74,7 @@ export function downloadCsvFile({ csvContent, fileName }) {
   URL.revokeObjectURL(objectUrl);
 }
 
-export function buildCsvFileName(prefix = "nubank-filtered-movements") {
+export function buildCsvFileName(prefix = "nubank-movimientos-filtrados") {
   const timestamp = new Date()
     .toISOString()
     .slice(0, 19)
@@ -113,4 +116,10 @@ function normalizeCsvValue(value) {
 
 function startsLikeSpreadsheetFormula(value) {
   return /^[=+@]/.test(value);
+}
+
+function formatCategorySource(categorySource) {
+  const normalizedSource = String(categorySource ?? "default").trim();
+
+  return CATEGORY_SOURCE_LABELS_ES[normalizedSource] ?? "Desconocido";
 }

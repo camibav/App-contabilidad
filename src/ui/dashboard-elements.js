@@ -65,54 +65,58 @@ export function getDashboardElements() {
     clearSavedDataButton: document.getElementById("clearSavedDataButton"),
   };
 
-  const requiredElements = [
-    elements.pdfInput,
-    elements.statusElement,
-    elements.outputElement,
+  const requiredElementKeys = [
+    "pdfInput",
+    "statusElement",
+    "outputElement",
 
-    elements.incomeSummaryElement,
-    elements.expensesSummaryElement,
-    elements.balanceSummaryElement,
-    elements.totalMovementsSummaryElement,
+    "incomeSummaryElement",
+    "expensesSummaryElement",
+    "balanceSummaryElement",
+    "totalMovementsSummaryElement",
 
-    elements.processedFilesList,
-    elements.dashboardInsightsList,
-    elements.expensesByMonthChart,
-    elements.expensesByCategoryChart,
-    elements.expensesCategoryShareChart,
-    elements.incomeVsExpensesChart,
-    elements.categoryBreakdownList,
-    elements.topExpensesList,
-    elements.recurringExpensesList,
-    elements.excludedRecurringExpensesList,
-    elements.fixedVariableExpensesSummary,
-    elements.uncategorizedMovementsList,
-    elements.learnedCategoryRulesList,
-    elements.learnedCategoryRulesCount,
+    "processedFilesList",
+    "dashboardInsightsList",
+    "expensesByMonthChart",
+    "expensesByCategoryChart",
+    "expensesCategoryShareChart",
+    "incomeVsExpensesChart",
+    "categoryBreakdownList",
+    "topExpensesList",
+    "recurringExpensesList",
+    "excludedRecurringExpensesList",
+    "fixedVariableExpensesSummary",
+    "uncategorizedMovementsList",
+    "learnedCategoryRulesList",
+    "learnedCategoryRulesCount",
 
-    elements.monthFilter,
-    elements.sourceFilter,
-    elements.typeFilter,
-    elements.categoryFilter,
-    elements.descriptionSearch,
-    elements.clearFiltersButton,
+    "monthFilter",
+    "sourceFilter",
+    "typeFilter",
+    "categoryFilter",
+    "descriptionSearch",
+    "clearFiltersButton",
 
-    elements.movementsTable,
-    elements.movementsTableBody,
-    elements.movementsTableStatus,
-    elements.pageSizeSelect,
-    elements.previousPageButton,
-    elements.nextPageButton,
-    elements.tablePaginationStatus,
+    "movementsTable",
+    "movementsTableBody",
+    "movementsTableStatus",
+    "pageSizeSelect",
+    "previousPageButton",
+    "nextPageButton",
+    "tablePaginationStatus",
 
-    elements.exportFilteredCsvButton,
-    elements.exportBackupJsonButton,
-    elements.importBackupJsonButton,
-    elements.backupJsonInput,
+    "exportFilteredCsvButton",
+    "exportBackupJsonButton",
+    "importBackupJsonButton",
+    "backupJsonInput",
   ];
 
-  if (requiredElements.some((element) => !element)) {
-    throw new Error("Required HTML elements were not found.");
+  const missingElementKeys = requiredElementKeys.filter((key) => !elements[key]);
+
+  if (missingElementKeys.length) {
+    throw new Error(
+      `No se encontraron elementos HTML requeridos: ${missingElementKeys.join(", ")}.`
+    );
   }
 
   return elements;

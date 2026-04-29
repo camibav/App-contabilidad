@@ -22,11 +22,11 @@ export function renderRecurringExpenses(elements, recurringExpenses = []) {
   const summary = document.createElement("p");
   const recurringLabel =
     safeRecurringExpenses.length === 1
-      ? "recurring pattern"
-      : "recurring patterns";
+      ? "patrón recurrente"
+      : "patrones recurrentes";
 
   summary.className = "recurring-expenses-summary";
-  summary.textContent = `Showing ${safeRecurringExpenses.length} ${recurringLabel} detected in the current filtered view.`;
+  summary.textContent = `Mostrando ${safeRecurringExpenses.length} ${recurringLabel} detectado(s) en la vista filtrada actual.`;
 
   container.appendChild(summary);
 
@@ -35,15 +35,15 @@ export function renderRecurringExpenses(elements, recurringExpenses = []) {
     item.className = "recurring-expense-item";
 
     const key = recurringExpense.key ?? "";
-    const description = recurringExpense.description ?? "Unknown movement";
+    const description = recurringExpense.description ?? "Movimiento desconocido";
     const categoryValue = recurringExpense.category ?? "uncategorized";
     const category = formatCategory(categoryValue);
     const months = Array.isArray(recurringExpense.months)
       ? recurringExpense.months
       : [];
-    const monthsLabel = recurringExpense.monthsCount === 1 ? "month" : "months";
+    const monthsLabel = recurringExpense.monthsCount === 1 ? "mes" : "meses";
     const movementsLabel =
-      recurringExpense.movementCount === 1 ? "movement" : "movements";
+      recurringExpense.movementCount === 1 ? "movimiento" : "movimientos";
 
     item.innerHTML = `
       <div class="recurring-expense-main">
@@ -70,14 +70,14 @@ export function renderRecurringExpenses(elements, recurringExpenses = []) {
       <div class="recurring-expense-side">
         <div class="recurring-expense-metrics">
           <div class="recurring-expense-metric">
-            <span class="recurring-expense-label">Avg. monthly</span>
+            <span class="recurring-expense-label">Promedio mensual</span>
             <strong class="recurring-expense-value recurring-expense-value--primary">
               ${formatCurrency(Number(recurringExpense.averageMonthlyAmount ?? 0))}
             </strong>
           </div>
 
           <div class="recurring-expense-metric">
-            <span class="recurring-expense-label">Total detected</span>
+            <span class="recurring-expense-label">Total detectado</span>
             <strong class="recurring-expense-value">
               ${formatCurrency(Number(recurringExpense.totalAmount ?? 0))}
             </strong>
@@ -91,7 +91,7 @@ export function renderRecurringExpenses(elements, recurringExpenses = []) {
           data-recurring-description="${escapeHtml(description)}"
           data-recurring-category="${escapeHtml(categoryValue)}"
         >
-          Exclude
+          Excluir
         </button>
       </div>
     `;
@@ -107,9 +107,9 @@ export function clearRecurringExpenses(elements) {
 function renderRecurringExpensesEmptyState(container) {
   container.innerHTML = `
     <div class="recurring-expense-empty-state">
-      <strong>No recurring expenses detected.</strong>
+      <strong>No hay gastos recurrentes detectados.</strong>
       <p>
-        Load at least two months of movements or clear filters to detect repeated expenses.
+        Carga al menos dos meses de movimientos o limpia los filtros para detectar gastos repetidos.
       </p>
     </div>
   `;
@@ -117,12 +117,12 @@ function renderRecurringExpensesEmptyState(container) {
 
 function formatDetectedMonths(months) {
   if (!months.length) {
-    return "No detected months.";
+    return "Sin meses detectados.";
   }
 
   if (months.length <= 4) {
-    return `Detected months: ${months.join(", ")}`;
+    return `Meses detectados: ${months.join(", ")}`;
   }
 
-  return `Detected months: ${months.slice(0, 4).join(", ")} +${months.length - 4} more`;
+  return `Meses detectados: ${months.slice(0, 4).join(", ")} +${months.length - 4} más`;
 }

@@ -48,14 +48,14 @@ export function buildMonthlyIncomeVsExpensesData(stats = {}) {
       const expenses = Number(group.expenses ?? 0);
 
       return {
-        month: group.key ?? "unknown",
+        month: group.key ?? "Desconocido",
         income,
         expenses,
         balance: income - expenses,
         totalMovements: Number(group.totalMovements ?? 0),
       };
     })
-    .sort((a, b) => String(a.month).localeCompare(String(b.month)));
+    .sort((a, b) => String(a.month).localeCompare(String(b.month), "es-CO"));
 }
 
 function groupSmallCategories(groups, limit) {
@@ -84,7 +84,7 @@ function groupSmallCategories(groups, limit) {
     ...visibleGroups,
     {
       key: OTHER_CATEGORY_KEY,
-      label: "Other",
+      label: "Otras categorías",
       expenses: otherExpenses,
       totalMovements: otherMovements,
     },

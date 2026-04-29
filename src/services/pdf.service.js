@@ -15,14 +15,14 @@ export async function extractEmbeddedPdfText(pdf, onStatus = () => {}) {
   const pagesText = [];
 
   for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-    onStatus(`Reading embedded text from page ${pageNumber} of ${pdf.numPages}...`);
+    onStatus(`Leyendo texto embebido de la página ${pageNumber} de ${pdf.numPages}...`);
 
     const page = await pdf.getPage(pageNumber);
     const textContent = await page.getTextContent();
     const pageText = buildPageTextFromItems(textContent.items);
 
     if (pageText.trim()) {
-      pagesText.push(`--- PAGE ${pageNumber} ---\n${pageText}`);
+      pagesText.push(`--- PÁGINA ${pageNumber} ---\n${pageText}`);
     }
 
     page.cleanup();
@@ -40,15 +40,15 @@ export async function extractTextWithOcr(pdf, onStatus = () => {}) {
   const createWorker = Tesseract.createWorker;
 
   if (typeof createWorker !== "function") {
-    console.log("Tesseract module:", tesseractModule);
-    throw new Error("Tesseract createWorker function was not found.");
+    console.log("Módulo Tesseract:", tesseractModule);
+    throw new Error("No se encontró la función createWorker de Tesseract.");
   }
 
   const worker = await createWorker("spa", 1, {
     logger: (message) => {
       if (message.status && typeof message.progress === "number") {
         const progress = Math.round(message.progress * 100);
-        onStatus(`OCR ${message.status}: ${progress}%`);
+        onStatus(`OCR ${translateOcrStatus(message.status)}: ${progress}%`);
       }
     },
   });
@@ -57,17 +57,17 @@ export async function extractTextWithOcr(pdf, onStatus = () => {}) {
 
   try {
     for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
-      onStatus(`Rendering page ${pageNumber} of ${pdf.numPages} for OCR...`);
+      onStatus(`Renderizando página ${pageNumber} de ${pdf.numPages} para OCR...`);
 
       const page = await pdf.getPage(pageNumber);
       const canvas = await renderPageToCanvas(page, 3);
 
-      onStatus(`Running OCR on page ${pageNumber} of ${pdf.numPages}...`);
+      onStatus(`Ejecutando OCR en la página ${pageNumber} de ${pdf.numPages}...`);
 
       const result = await worker.recognize(canvas);
       const pageText = result.data.text.trim();
 
-      pagesText.push(`--- PAGE ${pageNumber} OCR ---\n${pageText}`);
+      pagesText.push(`--- PÁGINA ${pageNumber} OCR ---\n${pageText}`);
 
       page.cleanup();
     }
@@ -127,7 +127,7 @@ async function renderPageToCanvas(page, scale = 3) {
   const context = canvas.getContext("2d");
 
   if (!context) {
-    throw new Error("Canvas context could not be created.");
+    throw new Error("No se pudo crear el contexto Canvas.");
   }
 
   canvas.width = viewport.width;
@@ -139,4 +139,18 @@ async function renderPageToCanvas(page, scale = 3) {
   }).promise;
 
   return canvas;
+}
+
+
+function translateOcrStatus(status) {
+  const normalizedStatus = String(status ?? "").toLowerCase();
+  const statusLabels = {
+    "loading tesseract core": "cargando núcleo de Tesseract",
+    "initializing tesseract": "inicializando Tesseract",
+    "loading language traineddata": "cargando datos del idioma",
+    "initializing api": "inicializando API de OCR",
+    "recognizing text": "reconociendo texto",
+  };
+
+  return statusLabels[normalizedStatus] ?? status;
 }
