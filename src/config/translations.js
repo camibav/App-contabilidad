@@ -5,6 +5,7 @@ export const CATEGORY_LABELS_ES = {
   food: "Alimentación",
   transport: "Transporte",
   transfers: "Transferencias",
+  "social-security": "Seguridad social",
   taxes: "Impuestos",
   financial: "Financiero",
   shopping: "Compras",
