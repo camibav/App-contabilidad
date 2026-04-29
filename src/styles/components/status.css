@@ -1,14 +1,69 @@
 .status {
-  display: inline-flex;
-  align-items: center;
-  min-height: 32px;
-  width: fit-content;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 42px;
   margin: 0;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-  color: var(--color-text-soft);
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 800;
+  border: 1px solid var(--status-border, var(--color-border));
+  border-radius: var(--radius-md, 10px);
+  background: var(--status-background, var(--color-surface-muted));
+  color: var(--status-color, var(--color-text-soft));
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.status::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  border-radius: var(--radius-pill, 999px);
+  background: currentColor;
+}
+
+.status--idle,
+.status--info {
+  --status-border: var(--color-border-strong, #d4d4d8);
+  --status-background: var(--color-surface-muted, #fafafa);
+  --status-color: var(--color-text-soft, #52525b);
+}
+
+.status--loading {
+  --status-border: var(--color-primary, #0057ff);
+  --status-background: var(--color-primary-soft, #eaf1ff);
+  --status-color: var(--color-primary-strong, #003ea8);
+}
+
+.status--loading::before {
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  background: transparent;
+  animation: status-spinner 760ms linear infinite;
+}
+
+.status--success {
+  --status-border: var(--color-income, #166534);
+  --status-background: var(--color-income-bg, #dcfce7);
+  --status-color: var(--color-income, #166534);
+}
+
+.status--warning {
+  --status-border: var(--color-warning, #facc15);
+  --status-background: var(--color-warning-soft, #fef9c3);
+  --status-color: #854d0e;
+}
+
+.status--error {
+  --status-border: var(--color-expense, #991b1b);
+  --status-background: var(--color-expense-bg, #fee2e2);
+  --status-color: var(--color-expense, #991b1b);
+}
+
+@keyframes status-spinner {
+  to {
+    transform: rotate(360deg);
+  }
 }

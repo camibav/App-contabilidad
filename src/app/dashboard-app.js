@@ -21,7 +21,7 @@ export function initializeDashboardApp({ elements, state }) {
   const renderDashboard = (options = {}) =>
     renderDashboardView({ elements, state, ...options });
 
-  setStatus(elements, "Listo. Selecciona uno o varios archivos PDF.");
+  setStatus(elements, "Listo. Selecciona uno o varios archivos PDF.", "idle");
   clearDashboardView({ elements, state });
   loadSavedData({ elements, state, renderDashboard });
 
