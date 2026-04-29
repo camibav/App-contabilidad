@@ -50,6 +50,7 @@
     <nav class="dashboard-nav" aria-label="Navegación del dashboard">
       <a href="#upload-section">Carga</a>
       <a href="#summary-section">Resumen</a>
+      <a href="#data-quality-section">Calidad</a>
       <a href="#filters-section">Filtros</a>
       <a href="#charts-section">Gráficas</a>
       <a href="#categories-section">Categorías</a>
@@ -101,6 +102,23 @@
         <strong id="totalMovementsSummary" class="summary-value">0</strong>
         <span class="summary-hint">Transacciones leídas</span>
       </article>
+    </section>
+
+    <section id="data-quality-section" class="card data-quality-section">
+      <div class="section-header">
+        <div>
+          <h2>Calidad de datos</h2>
+          <p class="section-description">
+            Revisa qué tan confiable está la información antes de interpretar gráficas, categorías y tendencias.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="dataQualityPanel"
+        class="data-quality-grid"
+        aria-live="polite"
+      ></div>
     </section>
 
     <section class="card">

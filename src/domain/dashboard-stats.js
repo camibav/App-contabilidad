@@ -9,12 +9,30 @@ export function buildDashboardStats(movements = []) {
 
   return {
     summary: buildSummary(safeMovements),
+    dataQuality: buildDataQualityStats(safeMovements, uncategorizedMovements),
     byMonth: buildGroupedStats(safeMovements, "month"),
     byCategory: buildGroupedStats(safeMovements, "category"),
     bySource: buildGroupedStats(safeMovements, "source"),
     topExpenses: buildTopExpenses(safeMovements),
     uncategorizedTotal: uncategorizedMovements.length,
     uncategorizedMovements: buildUncategorizedMovements(uncategorizedMovements),
+  };
+}
+
+function buildDataQualityStats(movements, uncategorizedMovements) {
+  const totalMovements = movements.length;
+  const uncategorizedTotal = uncategorizedMovements.length;
+  const classifiedMovements = Math.max(totalMovements - uncategorizedTotal, 0);
+  const classifiedPercentage = totalMovements
+    ? (classifiedMovements / totalMovements) * 100
+    : 0;
+
+  return {
+    totalMovements,
+    classifiedMovements,
+    uncategorizedMovements: uncategorizedTotal,
+    classifiedPercentage,
+    isComplete: totalMovements > 0 && uncategorizedTotal === 0,
   };
 }
 

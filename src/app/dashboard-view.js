@@ -2,6 +2,7 @@ import {
   clearCategoryBreakdown,
   clearDashboardCharts,
   clearDashboardInsights,
+  clearDataQualityPanel,
   clearExcludedRecurringExpenses,
   clearExpenseCategoryShareChart,
   clearFilterControls,
@@ -20,6 +21,7 @@ import {
   renderCsvExportButtonState,
   renderDashboardCharts,
   renderDashboardInsights,
+  renderDataQualityPanel,
   renderDebugOutput,
   renderExcludedRecurringExpenses,
   renderExpenseCategoryShareChart,
@@ -91,6 +93,12 @@ export function renderDashboardView({ elements, state, debugRawText } = {}) {
   const paginatedMovements = paginateMovements(sortedMovements, pagination);
 
   renderSummaryCards(elements, filteredStats.summary);
+  renderDataQualityPanel(elements, {
+    stats: filteredStats,
+    files,
+    learnedCategoryRules,
+    recurringExpenseExclusions,
+  });
   renderDashboardInsights(elements, filteredStats);
   renderDashboardCharts(elements, filteredStats);
   renderIncomeVsExpensesChart(
@@ -157,6 +165,7 @@ export function clearDashboardView({
   }
 
   clearSummaryCards(elements);
+  clearDataQualityPanel(elements);
   clearDashboardInsights(elements);
   clearDashboardCharts(elements);
   clearIncomeVsExpensesChart(elements);

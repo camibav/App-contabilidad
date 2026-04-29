@@ -13,6 +13,7 @@ export function getDashboardElements() {
 
     processedFilesList: document.getElementById("processedFilesList"),
     dashboardInsightsList: document.getElementById("dashboardInsightsList"),
+    dataQualityPanel: document.getElementById("dataQualityPanel"),
 
     expensesByMonthChart: document.getElementById("expensesByMonthChart"),
     expensesByCategoryChart: document.getElementById("expensesByCategoryChart"),
@@ -65,57 +66,13 @@ export function getDashboardElements() {
     clearSavedDataButton: document.getElementById("clearSavedDataButton"),
   };
 
-  const requiredElementKeys = [
-    "pdfInput",
-    "statusElement",
-    "outputElement",
+  const missingElements = Object.entries(elements)
+    .filter(([key, element]) => !["clearSavedDataButton", "dataQualityPanel"].includes(key) && !element)
+    .map(([key]) => key);
 
-    "incomeSummaryElement",
-    "expensesSummaryElement",
-    "balanceSummaryElement",
-    "totalMovementsSummaryElement",
-
-    "processedFilesList",
-    "dashboardInsightsList",
-    "expensesByMonthChart",
-    "expensesByCategoryChart",
-    "expensesCategoryShareChart",
-    "incomeVsExpensesChart",
-    "categoryBreakdownList",
-    "topExpensesList",
-    "recurringExpensesList",
-    "excludedRecurringExpensesList",
-    "fixedVariableExpensesSummary",
-    "uncategorizedMovementsList",
-    "learnedCategoryRulesList",
-    "learnedCategoryRulesCount",
-
-    "monthFilter",
-    "sourceFilter",
-    "typeFilter",
-    "categoryFilter",
-    "descriptionSearch",
-    "clearFiltersButton",
-
-    "movementsTable",
-    "movementsTableBody",
-    "movementsTableStatus",
-    "pageSizeSelect",
-    "previousPageButton",
-    "nextPageButton",
-    "tablePaginationStatus",
-
-    "exportFilteredCsvButton",
-    "exportBackupJsonButton",
-    "importBackupJsonButton",
-    "backupJsonInput",
-  ];
-
-  const missingElementKeys = requiredElementKeys.filter((key) => !elements[key]);
-
-  if (missingElementKeys.length) {
+  if (missingElements.length) {
     throw new Error(
-      `No se encontraron elementos HTML requeridos: ${missingElementKeys.join(", ")}.`
+      `No se encontraron elementos HTML requeridos: ${missingElements.join(", ")}.`
     );
   }
 
