@@ -99,9 +99,15 @@ async function handleRestoreBackupJson({
     return;
   }
 
-  const confirmed = confirmAction(
-    "Restaurar este backup reemplazará los datos guardados actuales, las reglas de categoría aprendidas y las exclusiones de gastos recurrentes en este navegador. ¿Deseas continuar?"
-  );
+  const confirmed = await confirmAction({
+    elements,
+    title: "Restaurar backup JSON",
+    message:
+      "Restaurar este backup reemplazará los datos guardados actuales, las reglas de categoría aprendidas y las exclusiones de gastos recurrentes en este navegador.",
+    confirmLabel: "Restaurar backup",
+    cancelLabel: "Cancelar",
+    tone: "warning",
+  });
 
   if (!confirmed) {
     input.value = "";

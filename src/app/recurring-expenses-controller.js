@@ -19,7 +19,7 @@ export function setupRecurringExpensesListeners({ elements, renderDashboard }) {
   }
 }
 
-function handleExcludeRecurringExpense({ elements, renderDashboard, event }) {
+async function handleExcludeRecurringExpense({ elements, renderDashboard, event }) {
   const button = event.target.closest("[data-recurring-exclude-key]");
 
   if (!button) {
@@ -34,9 +34,16 @@ function handleExcludeRecurringExpense({ elements, renderDashboard, event }) {
     return;
   }
 
-  const confirmed = confirmAction(
-    `¿Excluir "${description}" de los cálculos de gastos recurrentes? Esto también actualizará los gastos fijos vs variables.`
-  );
+  const confirmed = await confirmAction({
+    elements,
+    title: "Excluir gasto recurrente",
+    message:
+      `Patrón: ${description}\n\n` +
+      "Esto lo quitará de los cálculos de gastos recurrentes y actualizará gastos fijos vs variables.",
+    confirmLabel: "Excluir patrón",
+    cancelLabel: "Cancelar",
+    tone: "warning",
+  });
 
   if (!confirmed) {
     setStatus(elements, "La exclusión del gasto recurrente fue cancelada.");

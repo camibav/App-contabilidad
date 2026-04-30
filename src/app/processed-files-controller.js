@@ -15,7 +15,7 @@ export function setupProcessedFilesListeners({ elements, state, renderDashboard 
   );
 }
 
-function handleProcessedFileAction({ elements, state, renderDashboard, event }) {
+async function handleProcessedFileAction({ elements, state, renderDashboard, event }) {
   const target = event.target;
   if (!(target instanceof Element)) return;
 
@@ -25,11 +25,16 @@ function handleProcessedFileAction({ elements, state, renderDashboard, event }) 
   const fileName = deleteButton.dataset.removeProcessedFile;
   if (!fileName || !state.data) return;
 
-  const confirmed = confirmAction(
-    `¿Quitar "${fileName}" del dashboard?\n\n` +
-      "Esto eliminará el archivo procesado y los movimientos que solo pertenecen a ese archivo. " +
-      "Los movimientos que también estén en otros PDF se conservarán."
-  );
+  const confirmed = await confirmAction({
+    elements,
+    title: "Quitar archivo procesado",
+    message:
+      `Archivo: ${fileName}\n\n` +
+      "Esto eliminará el archivo procesado y los movimientos que solo pertenecen a ese archivo. Los movimientos que también estén en otros PDF se conservarán.",
+    confirmLabel: "Quitar archivo",
+    cancelLabel: "Cancelar",
+    tone: "danger",
+  });
 
   if (!confirmed) {
     setStatus(elements, "La eliminación del archivo procesado fue cancelada.");

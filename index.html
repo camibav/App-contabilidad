@@ -524,6 +524,40 @@
     </section>
   </main>
 
+
+  <dialog
+    id="confirmDialog"
+    class="confirm-dialog"
+    aria-labelledby="confirmDialogTitle"
+    aria-describedby="confirmDialogMessage"
+  >
+    <div class="confirm-dialog-card" role="document">
+      <div class="confirm-dialog-content">
+        <span class="confirm-dialog-eyebrow">Confirmación requerida</span>
+        <h2 id="confirmDialogTitle">Confirmar acción</h2>
+        <p id="confirmDialogMessage" class="confirm-dialog-message"></p>
+      </div>
+
+      <div class="confirm-dialog-actions">
+        <button
+          id="confirmDialogCancelButton"
+          class="secondary-button"
+          type="button"
+        >
+          Cancelar
+        </button>
+
+        <button
+          id="confirmDialogConfirmButton"
+          class="primary-button confirm-dialog-confirm-button"
+          type="button"
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </dialog>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>

@@ -10,8 +10,8 @@ import {
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
 import { normalizeDashboardData } from "../domain/dashboard-data-schema.js";
 import { resetDashboardDataState, setDashboardData } from "./dashboard-actions.js";
-import { confirmAction } from "./confirm-action.js";
 import { clearDashboardView } from "./dashboard-view.js";
+import { confirmAction } from "./confirm-action.js";
 
 export function loadSavedData({ elements, state, renderDashboard }) {
   try {
@@ -107,10 +107,16 @@ function clearEmptySavedDashboardData({ elements, state }) {
 }
 
 export function createClearSavedDataHandler({ elements, state }) {
-  return function handleClearSavedData() {
-    const confirmed = confirmAction(
-      "Esta acción eliminará permanentemente todos los datos guardados del dashboard en este navegador. ¿Deseas continuar?"
-    );
+  return async function handleClearSavedData() {
+    const confirmed = await confirmAction({
+      elements,
+      title: "Eliminar datos guardados",
+      message:
+        "Esta acción eliminará permanentemente todos los datos guardados del dashboard en este navegador. Esta operación no se puede deshacer.",
+      confirmLabel: "Eliminar datos",
+      cancelLabel: "Cancelar",
+      tone: "danger",
+    });
 
     if (!confirmed) {
       setStatus(elements, "La eliminación de los datos guardados fue cancelada.");

@@ -21,7 +21,7 @@ export function setupLearnedRulesListeners({ elements, renderDashboard }) {
   renderLearnedCategoryRulesPanel(elements, getLearnedCategoryRules());
 }
 
-function handleLearnedRuleAction({ elements, renderDashboard, event }) {
+async function handleLearnedRuleAction({ elements, renderDashboard, event }) {
   const deleteButton = event.target.closest("[data-delete-learned-rule-id]");
 
   if (!deleteButton) {
@@ -43,12 +43,17 @@ function handleLearnedRuleAction({ elements, renderDashboard, event }) {
     return;
   }
 
-  const confirmed = confirmAction(
-    "¿Eliminar esta regla de categoría aprendida?\n\n" +
+  const confirmed = await confirmAction({
+    elements,
+    title: "Eliminar regla aprendida",
+    message:
       `Patrón: ${ruleToDelete.pattern}\n` +
       `Categoría: ${formatCategory(ruleToDelete.category)}\n\n` +
-      "Los futuros PDF ya no usarán esta regla aprendida automáticamente."
-  );
+      "Los futuros PDF ya no usarán esta regla aprendida automáticamente.",
+    confirmLabel: "Eliminar regla",
+    cancelLabel: "Cancelar",
+    tone: "danger",
+  });
 
   if (!confirmed) {
     setStatus(elements, "La eliminación de la regla aprendida fue cancelada.");

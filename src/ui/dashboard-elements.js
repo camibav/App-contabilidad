@@ -64,10 +64,30 @@ export function getDashboardElements() {
     backupJsonInput: document.getElementById("backupJsonInput"),
 
     clearSavedDataButton: document.getElementById("clearSavedDataButton"),
+
+    confirmDialog: document.getElementById("confirmDialog"),
+    confirmDialogTitle: document.getElementById("confirmDialogTitle"),
+    confirmDialogMessage: document.getElementById("confirmDialogMessage"),
+    confirmDialogConfirmButton: document.getElementById(
+      "confirmDialogConfirmButton"
+    ),
+    confirmDialogCancelButton: document.getElementById(
+      "confirmDialogCancelButton"
+    ),
   };
 
+  const optionalElements = [
+    "clearSavedDataButton",
+    "dataQualityPanel",
+    "confirmDialog",
+    "confirmDialogTitle",
+    "confirmDialogMessage",
+    "confirmDialogConfirmButton",
+    "confirmDialogCancelButton",
+  ];
+
   const missingElements = Object.entries(elements)
-    .filter(([key, element]) => !["clearSavedDataButton", "dataQualityPanel"].includes(key) && !element)
+    .filter(([key, element]) => !optionalElements.includes(key) && !element)
     .map(([key]) => key);
 
   if (missingElements.length) {

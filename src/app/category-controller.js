@@ -15,7 +15,7 @@ import { buildDashboardDataWithMovements, setDashboardData } from "./dashboard-a
 import { confirmAction } from "./confirm-action.js";
 
 export function createCategoryChangeHandler({ elements, state, renderDashboard }) {
-  return function handleCategoryChange(event) {
+  return async function handleCategoryChange(event) {
     const target = event.target;
 
     if (!(target instanceof HTMLSelectElement)) {
@@ -59,13 +59,15 @@ export function createCategoryChangeHandler({ elements, state, renderDashboard }
       (movement) => movement.category !== newCategory
     );
 
-    const shouldApplyToSimilar = shouldApplyCategoryToSimilarMovements({
+    const shouldApplyToSimilar = await shouldApplyCategoryToSimilarMovements({
+      elements,
       targetMovement,
       newCategory,
       similarMovements,
     });
 
-    const shouldRememberRule = shouldRememberCategoryRule({
+    const shouldRememberRule = await shouldRememberCategoryRule({
+      elements,
       targetMovement,
       newCategory,
     });
@@ -119,7 +121,8 @@ export function createCategoryChangeHandler({ elements, state, renderDashboard }
   };
 }
 
-function shouldApplyCategoryToSimilarMovements({
+async function shouldApplyCategoryToSimilarMovements({
+  elements,
   targetMovement,
   newCategory,
   similarMovements,
@@ -132,14 +135,21 @@ function shouldApplyCategoryToSimilarMovements({
   const formattedCategory = formatCategory(newCategory);
   const description = targetMovement.description ?? "Movimiento desconocido";
 
-  return confirmAction(
-    `¿Aplicar "${formattedCategory}" a ${similarMovements.length} ${movementLabel} similar(es)?\n\n` +
+  return confirmAction({
+    elements,
+    title: "Aplicar categoría a movimientos similares",
+    message:
+      `Categoría: ${formattedCategory}\n` +
+      `Movimientos similares detectados: ${similarMovements.length} ${movementLabel}.\n\n` +
       `Movimiento base:\n${description}\n\n` +
-      "Si cancelas, solo se actualizará el movimiento seleccionado."
-  );
+      "Si cancelas, solo se actualizará el movimiento seleccionado.",
+    confirmLabel: "Aplicar a similares",
+    cancelLabel: "Solo este movimiento",
+    tone: "warning",
+  });
 }
 
-function shouldRememberCategoryRule({ targetMovement, newCategory }) {
+async function shouldRememberCategoryRule({ elements, targetMovement, newCategory }) {
   if (!canLearnCategoryRule(newCategory)) {
     return false;
   }
@@ -153,12 +163,18 @@ function shouldRememberCategoryRule({ targetMovement, newCategory }) {
   const formattedCategory = formatCategory(newCategory);
   const description = targetMovement.description ?? "Movimiento desconocido";
 
-  return confirmAction(
-    `¿Recordar "${formattedCategory}" para futuros movimientos con una descripción similar?\n\n` +
+  return confirmAction({
+    elements,
+    title: "Guardar regla de categoría aprendida",
+    message:
+      `Categoría: ${formattedCategory}\n\n` +
       `Patrón:\n${learnedRule.pattern}\n\n` +
       `Movimiento base:\n${description}\n\n` +
-      "Si aceptas, los futuros PDF podrán usar esta regla aprendida automáticamente."
-  );
+      "Si aceptas, los futuros PDF podrán usar esta regla aprendida automáticamente.",
+    confirmLabel: "Guardar regla",
+    cancelLabel: "No guardar",
+    tone: "info",
+  });
 }
 
 function saveLearnedRuleFromMovement({ targetMovement, newCategory }) {
