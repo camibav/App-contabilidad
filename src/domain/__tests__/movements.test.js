@@ -62,6 +62,72 @@ describe("movements", () => {
     });
   });
 
+  it("parsea movimientos cuando fecha, descripción y monto vienen en líneas separadas", () => {
+    const rawText = [
+      "Extracto 2026",
+      "01 feb",
+      "Enviaste a Restaurante",
+      "- $ 50.000",
+      "02 feb",
+      "Recibiste de Empresa",
+      "+ $ 3.000.000",
+    ].join("\n");
+
+    const movements = parseNuMovements(rawText, "febrero-2026.pdf");
+
+    expect(movements).toHaveLength(2);
+    expect(movements[0]).toMatchObject({
+      date: "2026-02-01",
+      description: "Restaurante",
+      amount: -50000,
+      type: "expense",
+      rawLine: "01 feb Enviaste a Restaurante - $ 50.000",
+    });
+    expect(movements[1]).toMatchObject({
+      date: "2026-02-02",
+      description: "Empresa",
+      amount: 3000000,
+      type: "income",
+      rawLine: "02 feb Recibiste de Empresa + $ 3.000.000",
+    });
+  });
+
+  it("parsea movimientos cuando la fecha y descripción vienen juntas y el monto en otra línea", () => {
+    const rawText = [
+      "Extracto 2026",
+      "01 feb Enviaste a Transporte",
+      "- $ 20.000",
+    ].join("\n");
+
+    const movements = parseNuMovements(rawText, "febrero-2026.pdf");
+
+    expect(movements).toHaveLength(1);
+    expect(movements[0]).toMatchObject({
+      date: "2026-02-01",
+      description: "Transporte",
+      amount: -20000,
+      type: "expense",
+    });
+  });
+
+  it("ignora marcadores de página entre líneas de un movimiento", () => {
+    const rawText = [
+      "Extracto 2026",
+      "01 feb",
+      "Enviaste a Cafe",
+      "--- PÁGINA 2 ---",
+      "- $ 10.000",
+    ].join("\n");
+
+    const movements = parseNuMovements(rawText, "febrero-2026.pdf");
+
+    expect(movements).toHaveLength(1);
+    expect(movements[0]).toMatchObject({
+      description: "Cafe",
+      amount: -10000,
+    });
+  });
+
   it("conserva movimientos reales idénticos del mismo PDF usando occurrenceIndex", () => {
     const rawText = [
       "Extracto 2026",

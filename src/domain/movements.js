@@ -30,33 +30,32 @@ export function parseNuMovements(
     .map((line) => normalizeLine(line))
     .filter(Boolean);
 
+  const movementCandidates = buildMovementCandidates(lines);
   const movements = [];
   const occurrenceCounts = new Map();
-  const movementRegex =
-    /^[^\d]*(\d{1,2})\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\s+(.+?)\s+([+-])\s*\$?\s*([\d.,]+)$/i;
 
-  for (const line of lines) {
-    const match = line.match(movementRegex);
+  for (const candidate of movementCandidates) {
+    const parsedCandidate = parseMovementCandidate(candidate, statementYear);
 
-    if (!match) {
+    if (!parsedCandidate) {
       continue;
     }
 
-    const [, rawDay, monthText, description, sign, rawAmount] = match;
-    const day = rawDay.padStart(2, "0");
-    const month = getMonthNumber(monthText);
-    const date = `${statementYear}-${month}-${day}`;
-    const monthKey = `${statementYear}-${month}`;
-    const cleanMovementDescription = cleanDescription(description);
-    const amount = parseColombianCurrency(rawAmount);
-    const signedAmount = sign === "-" ? amount * -1 : amount;
-    const type = signedAmount >= 0 ? "income" : "expense";
+    const {
+      date,
+      monthKey,
+      description,
+      cleanMovementDescription,
+      signedAmount,
+      type,
+      rawLine,
+    } = parsedCandidate;
 
     const categoryResult = inferCategoryFromDescription(description, type, {
       learnedCategoryRules,
       movementLike: {
         description: cleanMovementDescription,
-        rawLine: line,
+        rawLine,
         type,
       },
     });
@@ -98,11 +97,125 @@ export function parseNuMovements(
       type,
       source: sourceFileName,
       sources: normalizeMovementSources(sourceFileName),
-      rawLine: line,
+      rawLine,
     });
   }
 
   return movements;
+}
+
+
+const MOVEMENT_DATE_PATTERN =
+  /^[^\d]*(\d{1,2})\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\b(.*)$/i;
+const MOVEMENT_AMOUNT_PATTERN = /([+-])\s*\$?\s*([\d.,]+)\s*$/;
+
+function buildMovementCandidates(lines = []) {
+  const candidates = [];
+  let currentCandidate = null;
+
+  for (const line of lines) {
+    if (isIgnoredParserLine(line)) {
+      continue;
+    }
+
+    if (startsMovementCandidate(line)) {
+      if (currentCandidate && hasMovementAmount(currentCandidate.lines)) {
+        candidates.push(currentCandidate);
+      }
+
+      currentCandidate = {
+        lines: [line],
+      };
+
+      if (hasMovementAmount(currentCandidate.lines)) {
+        candidates.push(currentCandidate);
+        currentCandidate = null;
+      }
+
+      continue;
+    }
+
+    if (!currentCandidate) {
+      continue;
+    }
+
+    currentCandidate.lines.push(line);
+
+    if (hasMovementAmount(currentCandidate.lines)) {
+      candidates.push(currentCandidate);
+      currentCandidate = null;
+    }
+  }
+
+  if (currentCandidate && hasMovementAmount(currentCandidate.lines)) {
+    candidates.push(currentCandidate);
+  }
+
+  return candidates;
+}
+
+function parseMovementCandidate(candidate, statementYear) {
+  const lines = Array.isArray(candidate?.lines) ? candidate.lines : [];
+
+  if (!lines.length) {
+    return null;
+  }
+
+  const dateMatch = lines[0].match(MOVEMENT_DATE_PATTERN);
+
+  if (!dateMatch) {
+    return null;
+  }
+
+  const [, rawDay, monthText, firstDescriptionPart = ""] = dateMatch;
+  const body = [firstDescriptionPart, ...lines.slice(1)]
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const amountMatch = body.match(MOVEMENT_AMOUNT_PATTERN);
+
+  if (!amountMatch) {
+    return null;
+  }
+
+  const [, sign, rawAmount] = amountMatch;
+  const description = body.replace(MOVEMENT_AMOUNT_PATTERN, "").trim();
+  const cleanMovementDescription = cleanDescription(description);
+
+  if (!cleanMovementDescription) {
+    return null;
+  }
+
+  const day = rawDay.padStart(2, "0");
+  const month = getMonthNumber(monthText);
+  const date = `${statementYear}-${month}-${day}`;
+  const monthKey = `${statementYear}-${month}`;
+  const amount = parseColombianCurrency(rawAmount);
+  const signedAmount = sign === "-" ? amount * -1 : amount;
+  const type = signedAmount >= 0 ? "income" : "expense";
+  const rawLine = lines.join(" ");
+
+  return {
+    date,
+    monthKey,
+    description,
+    cleanMovementDescription,
+    signedAmount,
+    type,
+    rawLine,
+  };
+}
+
+function startsMovementCandidate(line) {
+  return MOVEMENT_DATE_PATTERN.test(line);
+}
+
+function hasMovementAmount(lines) {
+  return MOVEMENT_AMOUNT_PATTERN.test(lines.join(" ").trim());
+}
+
+function isIgnoredParserLine(line) {
+  return /^---\s*P[ÁA]GINA\s+\d+\s*(OCR)?\s*---$/i.test(line);
 }
 
 export function mergeMovementsById(previousMovements = [], newMovements = []) {
