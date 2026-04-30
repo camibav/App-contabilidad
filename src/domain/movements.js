@@ -31,6 +31,7 @@ export function parseNuMovements(
     .filter(Boolean);
 
   const movements = [];
+  const occurrenceCounts = new Map();
   const movementRegex =
     /^[^\d]*(\d{1,2})\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\s+(.+?)\s+([+-])\s*\$?\s*([\d.,]+)$/i;
 
@@ -60,10 +61,20 @@ export function parseNuMovements(
       },
     });
 
+    const baseDedupeKey = buildMovementBaseDedupeKey({
+      date,
+      description: cleanMovementDescription,
+      amount: signedAmount,
+    });
+    const occurrenceIndex = getNextMovementOccurrenceIndex(
+      occurrenceCounts,
+      baseDedupeKey
+    );
     const dedupeKey = buildMovementDedupeKey({
       date,
       description: cleanMovementDescription,
       amount: signedAmount,
+      occurrenceIndex,
     });
 
     movements.push({
@@ -72,8 +83,11 @@ export function parseNuMovements(
         description: cleanMovementDescription,
         amount: signedAmount,
         source: sourceFileName,
+        occurrenceIndex,
       }),
       dedupeKey,
+      baseDedupeKey,
+      occurrenceIndex,
       date,
       month: monthKey,
       statementMonth,
@@ -258,12 +272,23 @@ export function normalizeStoredMovement(
     type
   );
 
+  const occurrenceIndex = normalizeMovementOccurrenceIndex(
+    movement.occurrenceIndex
+  );
+  const baseDedupeKey =
+    movement.baseDedupeKey ??
+    buildMovementBaseDedupeKey({
+      date,
+      description,
+      amount,
+    });
   const dedupeKey =
     movement.dedupeKey ??
     buildMovementDedupeKey({
       date,
       description,
       amount,
+      occurrenceIndex,
     });
 
   const sources = normalizeMovementSources(movement.sources, source);
@@ -273,6 +298,8 @@ export function normalizeStoredMovement(
   const normalizedMovement = {
     id: movement.id,
     dedupeKey,
+    baseDedupeKey,
+    occurrenceIndex,
     date,
     month,
     statementMonth,
@@ -297,6 +324,7 @@ export function normalizeStoredMovement(
       description: normalizedMovement.description,
       amount: normalizedMovement.amount,
       source: normalizedMovement.source,
+      occurrenceIndex: normalizedMovement.occurrenceIndex,
     });
   }
 
@@ -305,17 +333,30 @@ export function normalizeStoredMovement(
 
 function normalizeMovementForMerge(movement) {
   const source = movement.source ?? "Unknown source";
+  const occurrenceIndex = normalizeMovementOccurrenceIndex(
+    movement.occurrenceIndex
+  );
+  const baseDedupeKey =
+    movement.baseDedupeKey ??
+    buildMovementBaseDedupeKey({
+      date: movement.date,
+      description: movement.description,
+      amount: movement.amount,
+    });
   const dedupeKey =
     movement.dedupeKey ??
     buildMovementDedupeKey({
       date: movement.date,
       description: movement.description,
       amount: movement.amount,
+      occurrenceIndex,
     });
 
   return {
     ...movement,
     dedupeKey,
+    baseDedupeKey,
+    occurrenceIndex,
     sources: normalizeMovementSources(movement.sources, source),
   };
 }
@@ -377,6 +418,10 @@ function mergeMovementPreservingManualCategory(existingMovement, incomingMovemen
       ...incomingMovement,
       id: existingMovement.id ?? incomingMovement.id,
       dedupeKey: existingMovement.dedupeKey ?? incomingMovement.dedupeKey,
+      baseDedupeKey:
+        existingMovement.baseDedupeKey ?? incomingMovement.baseDedupeKey,
+      occurrenceIndex:
+        existingMovement.occurrenceIndex ?? incomingMovement.occurrenceIndex ?? 1,
       source: existingMovement.source ?? incomingMovement.source,
       sources: mergedSources,
       statementMonth:
@@ -391,6 +436,10 @@ function mergeMovementPreservingManualCategory(existingMovement, incomingMovemen
     ...incomingMovement,
     id: existingMovement.id ?? incomingMovement.id,
     dedupeKey: existingMovement.dedupeKey ?? incomingMovement.dedupeKey,
+    baseDedupeKey:
+      existingMovement.baseDedupeKey ?? incomingMovement.baseDedupeKey,
+    occurrenceIndex:
+      existingMovement.occurrenceIndex ?? incomingMovement.occurrenceIndex ?? 1,
     source: existingMovement.source ?? incomingMovement.source,
     sources: mergedSources,
     statementMonth:
@@ -496,6 +545,7 @@ function getMovementMergeKey(movement) {
     date: movement?.date,
     description: movement?.description,
     amount: movement?.amount,
+    occurrenceIndex: movement?.occurrenceIndex,
   });
 }
 
@@ -506,25 +556,93 @@ function sortMovementsByDate(a, b) {
     return dateComparison;
   }
 
-  return String(a.description ?? "").localeCompare(String(b.description ?? ""));
+  const descriptionComparison = String(a.description ?? "").localeCompare(
+    String(b.description ?? "")
+  );
+
+  if (descriptionComparison !== 0) {
+    return descriptionComparison;
+  }
+
+  const amountComparison = Number(a.amount ?? 0) - Number(b.amount ?? 0);
+
+  if (amountComparison !== 0) {
+    return amountComparison;
+  }
+
+  return (
+    normalizeMovementOccurrenceIndex(a.occurrenceIndex) -
+    normalizeMovementOccurrenceIndex(b.occurrenceIndex)
+  );
 }
 
-function buildMovementId({ date, description, amount, source }) {
-  return `${date}-${description}-${amount}-${source}`
+function buildMovementId({
+  date,
+  description,
+  amount,
+  source,
+  occurrenceIndex = 1,
+}) {
+  const normalizedOccurrenceIndex =
+    normalizeMovementOccurrenceIndex(occurrenceIndex);
+  const occurrenceSuffix =
+    normalizedOccurrenceIndex > 1 ? `-${normalizedOccurrenceIndex}` : "";
+
+  return `${date}-${description}-${amount}-${source}${occurrenceSuffix}`
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
 
-function buildMovementDedupeKey({ date, description, amount }) {
+function buildMovementDedupeKey({
+  date,
+  description,
+  amount,
+  occurrenceIndex = 1,
+}) {
+  const baseDedupeKey = buildMovementBaseDedupeKey({
+    date,
+    description,
+    amount,
+  });
+  const normalizedOccurrenceIndex =
+    normalizeMovementOccurrenceIndex(occurrenceIndex);
+
+  if (normalizedOccurrenceIndex <= 1) {
+    return baseDedupeKey;
+  }
+
+  return `${baseDedupeKey}occ${normalizedOccurrenceIndex}`;
+}
+
+function buildMovementBaseDedupeKey({ date, description, amount }) {
   return `${date}-${description}-${amount}`
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]+/g, "")
     .replace(/^-+|-+$/g, "");
+}
+
+function getNextMovementOccurrenceIndex(occurrenceCounts, baseDedupeKey) {
+  const currentCount = occurrenceCounts.get(baseDedupeKey) ?? 0;
+  const nextCount = currentCount + 1;
+
+  occurrenceCounts.set(baseDedupeKey, nextCount);
+
+  return nextCount;
+}
+
+function normalizeMovementOccurrenceIndex(value) {
+  const occurrenceIndex = Number(value ?? 1);
+
+  if (!Number.isInteger(occurrenceIndex) || occurrenceIndex < 1) {
+    return 1;
+  }
+
+  return occurrenceIndex;
 }
 
 function normalizeMovementSources(...sourceValues) {
