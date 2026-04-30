@@ -19,6 +19,12 @@ import { partitionMovementsByValidation } from "../domain/movement-validation.js
 import { saveDashboardData } from "../services/storage.service.js";
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
 import { formatError } from "../utils/formatters.js";
+import {
+  buildImportStatusMessage,
+  buildPdfImportDiagnostics,
+  formatPdfImportDiagnostics,
+  summarizePdfImportDiagnostics,
+} from "./import-diagnostics.js";
 
 export function createPdfInputChangeHandler({ elements, state, renderDashboard }) {
   return async function handlePdfInputChange(event) {
@@ -52,6 +58,7 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
     }
 
     const rawTextByFile = [];
+    const importDiagnostics = [];
     const processingErrors = [];
 
     setStatus(
@@ -109,12 +116,11 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
             renderDashboard,
           });
 
+          importDiagnostics.push(result.diagnostics);
+
           appendOutput(
             elements,
-            "\n" +
-              `Archivo procesado: ${file.name}\n` +
-              `Movimientos detectados en este archivo: ${result.newMovementsCount}\n` +
-              `Movimientos acumulados: ${result.totalMovements}\n`
+            "\n" + formatPdfImportDiagnostics(result.diagnostics) + "\n"
           );
         } catch (error) {
           console.error(error);
@@ -143,6 +149,7 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
       renderFinalDashboardState({
         state,
         rawTextByFile,
+        importDiagnostics,
         renderDashboard,
       });
 
@@ -155,20 +162,22 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
         return;
       }
 
-      if (processingErrors.length) {
-        setStatus(
-          elements,
-          `Procesamiento finalizado con ${processingErrors.length} error(es). Archivos: ${state.data.files.length}. Total de movimientos: ${state.data.movements.length}.`,
-          "warning"
-        );
+      const statusMessage = buildImportStatusMessage({
+        diagnostics: importDiagnostics,
+        processingErrorsCount: processingErrors.length,
+        filesCount: state.data.files.length,
+        totalMovements: state.data.movements.length,
+      });
+      const importSummary = summarizePdfImportDiagnostics(importDiagnostics);
+      const hasDiscardedMovements = importSummary.invalidMovementsCount > 0;
+      const hasNoImportedMovements = importSummary.validMovementsCount === 0;
+
+      if (processingErrors.length || hasDiscardedMovements || hasNoImportedMovements) {
+        setStatus(elements, statusMessage, "warning");
         return;
       }
 
-      setStatus(
-        elements,
-        `Procesamiento finalizado. Archivos: ${state.data.files.length}. Total de movimientos: ${state.data.movements.length}.`,
-        "success"
-      );
+      setStatus(elements, statusMessage, "success");
     } finally {
       resetFileInput(elements);
     }
@@ -267,25 +276,45 @@ function applyParsedResult({ state, rawText, fileName, renderDashboard }) {
 
   renderDashboard();
 
+  const diagnostics = buildPdfImportDiagnostics({
+    fileName,
+    rawText,
+    detectedMovements: newMovements,
+    validMovements,
+    invalidMovements,
+    totalMovements: mergedMovements.length,
+  });
+
   return {
     newMovementsCount: newMovements.length,
     validMovementsCount: validMovements.length,
     invalidMovementsCount: invalidMovements.length,
     invalidMovements,
+    diagnostics,
     totalMovements: mergedMovements.length,
   };
 }
 
-function renderFinalDashboardState({ state, rawTextByFile, renderDashboard }) {
+function renderFinalDashboardState({
+  state,
+  rawTextByFile,
+  importDiagnostics,
+  renderDashboard,
+}) {
   if (!state.data) {
     return;
   }
 
-  const debugRawText = rawTextByFile.length
+  const rawTextDebugBlock = rawTextByFile.length
     ? rawTextByFile.join("\n\n")
     : "--- NO HAY TEXTO BRUTO NUEVO DISPONIBLE ---";
+  const diagnosticsDebugBlock = Array.isArray(importDiagnostics) && importDiagnostics.length
+    ? importDiagnostics.map(formatPdfImportDiagnostics).join("\n\n")
+    : "--- NO HAY DIAGNÓSTICO DE IMPORTACIÓN DISPONIBLE ---";
 
-  renderDashboard({ debugRawText });
+  renderDashboard({
+    debugRawText: `${diagnosticsDebugBlock}\n\n${rawTextDebugBlock}`,
+  });
 }
 
 function buildInitialProcessingMessage({ pdfFiles, rejectedFiles }) {
