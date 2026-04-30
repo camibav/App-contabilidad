@@ -15,6 +15,7 @@ import {
   normalizeStoredMovement,
 } from "../domain/movements.js";
 import { buildDashboardStats } from "../domain/dashboard-stats.js";
+import { partitionMovementsByValidation } from "../domain/movement-validation.js";
 import {
   resetDashboardData,
   resetTablePaginationState,
@@ -42,20 +43,23 @@ export function loadSavedData({ elements, state, renderDashboard }) {
     );
 
     const deduplicatedMovements = mergeMovementsById([], normalizedMovements);
+    const { validMovements, invalidMovements } = partitionMovementsByValidation(
+      deduplicatedMovements
+    );
 
-    if (!deduplicatedMovements.length) {
+    if (!validMovements.length) {
       clearEmptySavedDashboardData({ elements, state });
       return;
     }
 
-    const dashboardStats = buildDashboardStats(deduplicatedMovements);
+    const dashboardStats = buildDashboardStats(validMovements);
 
     state.data = {
       ...parsedData,
       fileName: normalizedFiles.at(-1)?.name ?? fallbackSource,
       files: normalizedFiles,
       processedAt: parsedData.processedAt ?? new Date().toISOString(),
-      movements: deduplicatedMovements,
+      movements: validMovements,
       summary: dashboardStats.summary,
     };
 
@@ -69,7 +73,11 @@ export function loadSavedData({ elements, state, renderDashboard }) {
 
     setStatus(
       elements,
-      `Datos guardados cargados. Archivos: ${state.data.files.length}. Movimientos: ${deduplicatedMovements.length}.`
+      buildSavedDataStatus({
+        filesCount: state.data.files.length,
+        validMovementsCount: validMovements.length,
+        invalidMovementsCount: invalidMovements.length,
+      })
     );
   } catch (error) {
     console.error(error);
@@ -82,6 +90,20 @@ export function loadSavedData({ elements, state, renderDashboard }) {
 
     setStatus(elements, "Los datos guardados estaban corruptos y fueron eliminados.");
   }
+}
+
+function buildSavedDataStatus({
+  filesCount,
+  validMovementsCount,
+  invalidMovementsCount,
+}) {
+  const baseMessage = `Datos guardados cargados. Archivos: ${filesCount}. Movimientos: ${validMovementsCount}.`;
+
+  if (!invalidMovementsCount) {
+    return baseMessage;
+  }
+
+  return `${baseMessage} Movimientos descartados por validación: ${invalidMovementsCount}.`;
 }
 
 function hasStoredMovements(parsedData) {

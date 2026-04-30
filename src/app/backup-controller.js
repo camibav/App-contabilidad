@@ -5,6 +5,7 @@ import {
   setStatus,
 } from "../ui/dashboard-ui.js";
 import { buildDashboardStats } from "../domain/dashboard-stats.js";
+import { partitionMovementsByValidation } from "../domain/movement-validation.js";
 import {
   mergeMovementsById,
   normalizeProcessedFiles,
@@ -176,14 +177,20 @@ function normalizeRestoredDashboardData(rawData, learnedCategoryRules = []) {
   );
 
   const deduplicatedMovements = mergeMovementsById([], normalizedMovements);
-  const dashboardStats = buildDashboardStats(deduplicatedMovements);
+  const { validMovements } = partitionMovementsByValidation(deduplicatedMovements);
+
+  if (!validMovements.length) {
+    throw new Error("El backup no contiene movimientos válidos para restaurar.");
+  }
+
+  const dashboardStats = buildDashboardStats(validMovements);
 
   return {
     ...rawData,
     fileName: fallbackSource,
     files: normalizedFiles,
     processedAt: rawData.processedAt ?? new Date().toISOString(),
-    movements: deduplicatedMovements,
+    movements: validMovements,
     summary: dashboardStats.summary,
   };
 }

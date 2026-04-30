@@ -1,24 +1,32 @@
-import { CATEGORY_OPTIONS } from "../config/categories.js";
 import {
   CATEGORY_SOURCE_LABELS_ES,
   CATEGORY_SOURCE_TITLES_ES,
 } from "../config/translations.js";
+import {
+  getMovementCategoryOptions,
+  normalizeMovementCategory,
+} from "../domain/movement-validation.js";
 import { formatCategory } from "../utils/formatters.js";
 import { escapeHtml } from "../utils/html.js";
 
 export function renderCategorySelect(movement, options = {}) {
-  const selectedCategory = movement.category ?? "uncategorized";
+  const selectedCategory = normalizeMovementCategory(
+    movement.category,
+    movement.type
+  );
   const showSourceBadge = options.showSourceBadge !== false;
 
-  const categoryOptions = CATEGORY_OPTIONS.map((category) => {
-    const selected = category === selectedCategory ? "selected" : "";
+  const categoryOptions = getMovementCategoryOptions(movement.type)
+    .map((category) => {
+      const selected = category === selectedCategory ? "selected" : "";
 
-    return `
+      return `
       <option value="${escapeHtml(category)}" ${selected}>
         ${formatCategory(category)}
       </option>
     `;
-  }).join("");
+    })
+    .join("");
 
   return `
     <div class="category-control">

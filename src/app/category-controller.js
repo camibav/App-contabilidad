@@ -6,6 +6,7 @@ import {
   upsertLearnedCategoryRule,
 } from "../domain/category-learning.js";
 import { findSimilarMovements } from "../domain/movement-similarity.js";
+import { canAssignCategoryToMovementType } from "../domain/movement-validation.js";
 import {
   getLearnedCategoryRules,
   saveLearnedCategoryRules,
@@ -41,6 +42,16 @@ export function createCategoryChangeHandler({ elements, state, renderDashboard }
     if (!targetMovement) {
       renderDashboard();
       setStatus(elements, "No se encontró el movimiento seleccionado.");
+      return;
+    }
+
+    if (!canAssignCategoryToMovementType(newCategory, targetMovement.type)) {
+      renderDashboard();
+      setStatus(
+        elements,
+        "La categoría seleccionada no es válida para el tipo de movimiento.",
+        "error"
+      );
       return;
     }
 

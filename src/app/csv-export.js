@@ -115,7 +115,7 @@ function normalizeCsvValue(value) {
 }
 
 function startsLikeSpreadsheetFormula(value) {
-  return /^[=+@]/.test(value);
+  return /^[=+\-@]/.test(value);
 }
 
 function formatCategorySource(categorySource) {

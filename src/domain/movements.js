@@ -8,6 +8,7 @@ import {
   parseColombianCurrency,
 } from "../utils/text.js";
 import { inferCategoryFromLearnedRules } from "./category-learning.js";
+import { normalizeMovementCategory } from "./movement-validation.js";
 
 export function parseNuMovements(
   rawText,
@@ -77,7 +78,7 @@ export function parseNuMovements(
       month: monthKey,
       statementMonth,
       description: cleanMovementDescription,
-      category: categoryResult.category,
+      category: normalizeMovementCategory(categoryResult.category, type),
       categorySource: categoryResult.source,
       amount: signedAmount,
       type,
@@ -252,9 +253,10 @@ export function normalizeStoredMovement(
     },
   });
 
-  const category = shouldInferCategory
-    ? inferredCategory.category
-    : existingCategory;
+  const category = normalizeMovementCategory(
+    shouldInferCategory ? inferredCategory.category : existingCategory,
+    type
+  );
 
   const dedupeKey =
     movement.dedupeKey ??

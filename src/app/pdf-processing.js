@@ -15,6 +15,7 @@ import {
   parseNuMovements,
 } from "../domain/movements.js";
 import { buildDashboardStats } from "../domain/dashboard-stats.js";
+import { partitionMovementsByValidation } from "../domain/movement-validation.js";
 import { saveDashboardData } from "../services/storage.service.js";
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
 import { formatError } from "../utils/formatters.js";
@@ -235,12 +236,15 @@ function applyParsedResult({ state, rawText, fileName, renderDashboard }) {
   const newMovements = parseNuMovements(rawText, fileName, {
     learnedCategoryRules,
   });
+  const { validMovements, invalidMovements } = partitionMovementsByValidation(
+    newMovements
+  );
 
   const previousMovements = Array.isArray(state.data?.movements)
     ? state.data.movements
     : [];
 
-  const mergedMovements = mergeMovementsById(previousMovements, newMovements);
+  const mergedMovements = mergeMovementsById(previousMovements, validMovements);
   const dashboardStats = buildDashboardStats(mergedMovements);
   const processedAt = new Date().toISOString();
 
@@ -265,6 +269,9 @@ function applyParsedResult({ state, rawText, fileName, renderDashboard }) {
 
   return {
     newMovementsCount: newMovements.length,
+    validMovementsCount: validMovements.length,
+    invalidMovementsCount: invalidMovements.length,
+    invalidMovements,
     totalMovements: mergedMovements.length,
   };
 }
