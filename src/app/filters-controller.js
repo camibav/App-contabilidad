@@ -2,6 +2,9 @@ import {
   clearFilterControls,
   setStatus,
 } from "../ui/dashboard-ui.js";
+import { debounce } from "../utils/debounce.js";
+
+const DESCRIPTION_FILTER_DEBOUNCE_DELAY = 250;
 
 export function setupFilterListeners({ elements, state, renderDashboard }) {
   const filterSelects = [
@@ -11,18 +14,29 @@ export function setupFilterListeners({ elements, state, renderDashboard }) {
     elements.categoryFilter,
   ];
 
+  const debouncedDescriptionFilterChange = debounce(
+    () => handleFiltersChange({ elements, state, renderDashboard }),
+    DESCRIPTION_FILTER_DEBOUNCE_DELAY
+  );
+
   for (const filterSelect of filterSelects) {
     filterSelect.addEventListener("change", () =>
       handleFiltersChange({ elements, state, renderDashboard })
     );
   }
 
-  elements.descriptionSearch.addEventListener("input", () =>
-    handleFiltersChange({ elements, state, renderDashboard })
+  elements.descriptionSearch.addEventListener(
+    "input",
+    debouncedDescriptionFilterChange
   );
 
   elements.clearFiltersButton.addEventListener("click", () =>
-    handleClearFilters({ elements, state, renderDashboard })
+    handleClearFilters({
+      elements,
+      state,
+      renderDashboard,
+      debouncedDescriptionFilterChange,
+    })
   );
 }
 
@@ -38,7 +52,13 @@ function handleFiltersChange({ elements, state, renderDashboard }) {
   );
 }
 
-function handleClearFilters({ elements, state, renderDashboard }) {
+function handleClearFilters({
+  elements,
+  state,
+  renderDashboard,
+  debouncedDescriptionFilterChange,
+}) {
+  debouncedDescriptionFilterChange.cancel();
   clearFilterControls(elements);
   state.tablePagination.page = 1;
 
