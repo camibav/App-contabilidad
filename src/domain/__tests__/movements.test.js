@@ -29,6 +29,39 @@ describe("movements", () => {
     });
   });
 
+  it("prioriza el año del nombre del archivo sobre el primer año encontrado en el texto", () => {
+    const rawText = [
+      "Fecha de generación 2025",
+      "Extracto asociado a referencias antiguas 2024",
+      "01 feb Enviaste a Restaurante - $ 50.000",
+    ].join("\n");
+
+    const movements = parseNuMovements(rawText, "extracto-febrero-2026.pdf");
+
+    expect(movements).toHaveLength(1);
+    expect(movements[0]).toMatchObject({
+      date: "2026-02-01",
+      month: "2026-02",
+      statementMonth: "2026-02",
+    });
+  });
+
+  it("usa el año detectado en el texto cuando el nombre del archivo no contiene año", () => {
+    const rawText = [
+      "Extracto 2026",
+      "01 mar Enviaste a Transporte - $ 20.000",
+    ].join("\n");
+
+    const movements = parseNuMovements(rawText, "marzo.pdf");
+
+    expect(movements).toHaveLength(1);
+    expect(movements[0]).toMatchObject({
+      date: "2026-03-01",
+      month: "2026-03",
+      statementMonth: "2026-03",
+    });
+  });
+
   it("conserva movimientos reales idénticos del mismo PDF usando occurrenceIndex", () => {
     const rawText = [
       "Extracto 2026",

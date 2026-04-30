@@ -19,7 +19,7 @@ export function parseNuMovements(
     ? options.learnedCategoryRules
     : [];
 
-  const statementYear = extractStatementYear(rawText);
+  const statementYear = inferStatementYear({ rawText, sourceFileName });
   const statementMonth = inferStatementMonthFromFileName(
     sourceFileName,
     statementYear
@@ -681,10 +681,19 @@ function isValidProcessedFileName(fileName) {
   return normalizedFileName.toLowerCase().endsWith(".pdf");
 }
 
+function inferStatementYear({ rawText, sourceFileName }) {
+  return extractStatementYearFromFileName(sourceFileName) ?? extractStatementYear(rawText);
+}
+
+function extractStatementYearFromFileName(fileName) {
+  const normalizedFileName = normalizeText(fileName);
+
+  return normalizedFileName.match(/\b(20\d{2})\b/)?.[1] ?? null;
+}
+
 function inferStatementMonthFromFileName(fileName, fallbackYear) {
   const normalizedFileName = normalizeText(fileName);
-  const yearMatch = normalizedFileName.match(/\b(20\d{2})\b/);
-  const year = yearMatch?.[1] ?? fallbackYear;
+  const year = extractStatementYearFromFileName(fileName) ?? fallbackYear;
 
   if (!year) {
     return null;
