@@ -4,7 +4,11 @@ import { stampDashboardDataVersion } from "../domain/dashboard-data-schema.js";
 export function saveDashboardData(data) {
   const versionedData = stampDashboardDataVersion(data);
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(versionedData));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(versionedData));
+  } catch (error) {
+    console.error("No se pudieron guardar los datos del dashboard.", error);
+  }
 
   return versionedData;
 }

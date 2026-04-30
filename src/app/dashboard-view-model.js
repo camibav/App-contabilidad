@@ -3,8 +3,6 @@ import { buildRecurringExpenses } from "../domain/recurring-expenses.js";
 import { buildFixedVariableExpensesSummary } from "../domain/fixed-variable-expenses.js";
 import { filterMovements } from "../domain/movement-filters.js";
 import { getEmptySummary } from "../domain/summary.js";
-import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
-import { getRecurringExpenseExclusions } from "../services/recurring-expenses-storage.service.js";
 import {
   buildExpenseCategoryShareData,
   buildMonthlyIncomeVsExpensesData,
@@ -22,11 +20,11 @@ export function buildDashboardViewModel({
   filters = {},
   tablePagination,
   tableSort,
+  learnedCategoryRules = [],
+  recurringExpenseExclusions = [],
 } = {}) {
   const movements = getDashboardMovements(data);
   const files = getDashboardFiles(data);
-  const learnedCategoryRules = getLearnedCategoryRules();
-  const recurringExpenseExclusions = getRecurringExpenseExclusions();
   const excludedRecurringExpenseKeys = recurringExpenseExclusions.map(
     (exclusion) => exclusion.key
   );
@@ -76,9 +74,10 @@ export function buildDashboardViewModel({
 export function buildEmptyDashboardViewModel({
   tablePagination,
   tableSort,
+  learnedCategoryRules = [],
+  recurringExpenseExclusions = [],
 } = {}) {
   const filteredStats = buildDashboardStats([]);
-  const recurringExpenseExclusions = getRecurringExpenseExclusions();
   const pageSize = Number(tablePagination?.pageSize) || DEFAULT_TABLE_PAGE_SIZE;
 
   return {
@@ -86,7 +85,7 @@ export function buildEmptyDashboardViewModel({
     files: [],
     filters: {},
     filtersAreActive: false,
-    learnedCategoryRules: getLearnedCategoryRules(),
+    learnedCategoryRules,
     recurringExpenseExclusions,
     filteredMovements: [],
     sortedMovements: [],

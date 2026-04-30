@@ -6,14 +6,11 @@ import {
 import {
   clearSavedDashboardData,
   getSavedDashboardData,
-  saveDashboardData,
 } from "../services/storage.service.js";
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
 import { normalizeDashboardData } from "../domain/dashboard-data-schema.js";
-import {
-  resetDashboardData,
-  resetTablePaginationState,
-} from "./dashboard-state.js";
+import { resetDashboardDataState, setDashboardData } from "./dashboard-actions.js";
+import { confirmAction } from "./confirm-action.js";
 import { clearDashboardView } from "./dashboard-view.js";
 
 export function loadSavedData({ elements, state, renderDashboard }) {
@@ -41,7 +38,7 @@ export function loadSavedData({ elements, state, renderDashboard }) {
       return;
     }
 
-    state.data = saveDashboardData(normalizedData);
+    setDashboardData(state, normalizedData);
     renderDashboard();
 
     setOutput(
@@ -64,8 +61,7 @@ export function loadSavedData({ elements, state, renderDashboard }) {
     console.error(error);
 
     clearSavedDashboardData();
-    resetDashboardData(state);
-    resetTablePaginationState(state);
+    resetDashboardDataState(state);
     clearFilterControls(elements);
     clearDashboardView({ elements, state, resetFilters: true, resetOutput: true });
 
@@ -105,15 +101,14 @@ function hasStoredMovements(parsedData) {
 
 function clearEmptySavedDashboardData({ elements, state }) {
   clearSavedDashboardData();
-  resetDashboardData(state);
-  resetTablePaginationState(state);
+  resetDashboardDataState(state);
   clearFilterControls(elements);
   clearDashboardView({ elements, state, resetFilters: true, resetOutput: true });
 }
 
 export function createClearSavedDataHandler({ elements, state }) {
   return function handleClearSavedData() {
-    const confirmed = window.confirm(
+    const confirmed = confirmAction(
       "Esta acción eliminará permanentemente todos los datos guardados del dashboard en este navegador. ¿Deseas continuar?"
     );
 
@@ -123,8 +118,7 @@ export function createClearSavedDataHandler({ elements, state }) {
     }
 
     clearSavedDashboardData();
-    resetDashboardData(state);
-    resetTablePaginationState(state);
+    resetDashboardDataState(state);
     clearFilterControls(elements);
     clearDashboardView({ elements, state, resetFilters: true, resetOutput: true });
 

@@ -1,4 +1,6 @@
 import { getCurrentFilters } from "../ui/dashboard-ui.js";
+import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
+import { getRecurringExpenseExclusions } from "../services/recurring-expenses-storage.service.js";
 import {
   buildDashboardViewModel,
   buildEmptyDashboardViewModel,
@@ -17,6 +19,8 @@ export function renderDashboardView({ elements, state, debugRawText } = {}) {
     return clearDashboardView({ elements, state });
   }
 
+  const viewContext = getDashboardViewContext();
+
   renderDashboardFilterOptions(elements, {
     movements: getDashboardMovements(state.data),
     files: getDashboardFiles(state.data),
@@ -27,6 +31,7 @@ export function renderDashboardView({ elements, state, debugRawText } = {}) {
     filters: getCurrentFilters(elements),
     tablePagination: state.tablePagination,
     tableSort: state.tableSort,
+    ...viewContext,
   });
 
   renderDashboardSections({
@@ -47,6 +52,7 @@ export function clearDashboardView({
   const viewModel = buildEmptyDashboardViewModel({
     tablePagination: state.tablePagination,
     tableSort: state.tableSort,
+    ...getDashboardViewContext(),
   });
 
   clearDashboardSections({
@@ -60,6 +66,13 @@ export function clearDashboardView({
 }
 
 export { hasActiveFilters };
+
+function getDashboardViewContext() {
+  return {
+    learnedCategoryRules: getLearnedCategoryRules(),
+    recurringExpenseExclusions: getRecurringExpenseExclusions(),
+  };
+}
 
 function buildDashboardViewResult(viewModel) {
   return {

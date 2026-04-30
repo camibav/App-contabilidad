@@ -7,6 +7,7 @@ import {
   getLearnedCategoryRules,
 } from "../services/category-rules-storage.service.js";
 import { formatCategory } from "../utils/formatters.js";
+import { confirmAction } from "./confirm-action.js";
 
 export function setupLearnedRulesListeners({ elements, renderDashboard }) {
   if (!elements.learnedCategoryRulesList) {
@@ -42,7 +43,7 @@ function handleLearnedRuleAction({ elements, renderDashboard, event }) {
     return;
   }
 
-  const confirmed = window.confirm(
+  const confirmed = confirmAction(
     "¿Eliminar esta regla de categoría aprendida?\n\n" +
       `Patrón: ${ruleToDelete.pattern}\n` +
       `Categoría: ${formatCategory(ruleToDelete.category)}\n\n` +

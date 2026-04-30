@@ -3,7 +3,7 @@ import {
   deleteRecurringExpenseExclusion,
 } from "../services/recurring-expenses-storage.service.js";
 import { setStatus } from "../ui/dashboard-ui.js";
-import { formatCategory } from "../utils/formatters.js";
+import { confirmAction } from "./confirm-action.js";
 
 export function setupRecurringExpensesListeners({ elements, renderDashboard }) {
   if (elements.recurringExpensesList) {
@@ -34,7 +34,7 @@ function handleExcludeRecurringExpense({ elements, renderDashboard, event }) {
     return;
   }
 
-  const confirmed = window.confirm(
+  const confirmed = confirmAction(
     `¿Excluir "${description}" de los cálculos de gastos recurrentes? Esto también actualizará los gastos fijos vs variables.`
   );
 

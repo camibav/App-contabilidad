@@ -1,8 +1,11 @@
-import { buildDashboardStats } from "../domain/dashboard-stats.js";
 import { removeProcessedFileFromDashboardData } from "../domain/movements.js";
-import { saveDashboardData } from "../services/storage.service.js";
 import { setStatus } from "../ui/dashboard-ui.js";
-import { resetTablePaginationState } from "./dashboard-state.js";
+import {
+  buildDashboardDataWithMovements,
+  resetDashboardPagination,
+  setDashboardData,
+} from "./dashboard-actions.js";
+import { confirmAction } from "./confirm-action.js";
 
 export function setupProcessedFilesListeners({ elements, state, renderDashboard }) {
   if (!elements.processedFilesList) return;
@@ -22,7 +25,7 @@ function handleProcessedFileAction({ elements, state, renderDashboard, event }) 
   const fileName = deleteButton.dataset.removeProcessedFile;
   if (!fileName || !state.data) return;
 
-  const confirmed = window.confirm(
+  const confirmed = confirmAction(
     `¿Quitar "${fileName}" del dashboard?\n\n` +
       "Esto eliminará el archivo procesado y los movimientos que solo pertenecen a ese archivo. " +
       "Los movimientos que también estén en otros PDF se conservarán."
@@ -34,15 +37,13 @@ function handleProcessedFileAction({ elements, state, renderDashboard, event }) 
   }
 
   const updatedData = removeProcessedFileFromDashboardData(state.data, fileName);
-  const dashboardStats = buildDashboardStats(updatedData.movements);
+  const nextData = buildDashboardDataWithMovements(
+    updatedData,
+    updatedData.movements
+  );
 
-  state.data = {
-    ...updatedData,
-    summary: dashboardStats.summary,
-  };
-
-  resetTablePaginationState(state);
-  state.data = saveDashboardData(state.data);
+  resetDashboardPagination(state);
+  setDashboardData(state, nextData);
 
   renderDashboard({
     debugRawText: `--- ARCHIVO PROCESADO ELIMINADO: ${fileName} ---`,

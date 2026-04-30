@@ -1,5 +1,4 @@
 import { setStatus } from "../ui/dashboard-ui.js";
-import { buildDashboardStats } from "../domain/dashboard-stats.js";
 import {
   buildLearnedCategoryRule,
   canLearnCategoryRule,
@@ -11,8 +10,9 @@ import {
   getLearnedCategoryRules,
   saveLearnedCategoryRules,
 } from "../services/category-rules-storage.service.js";
-import { saveDashboardData } from "../services/storage.service.js";
 import { formatCategory } from "../utils/formatters.js";
+import { buildDashboardDataWithMovements, setDashboardData } from "./dashboard-actions.js";
+import { confirmAction } from "./confirm-action.js";
 
 export function createCategoryChangeHandler({ elements, state, renderDashboard }) {
   return function handleCategoryChange(event) {
@@ -93,16 +93,12 @@ export function createCategoryChangeHandler({ elements, state, renderDashboard }
       ? saveLearnedRuleFromMovement({ targetMovement, newCategory })
       : false;
 
-    const dashboardStats = buildDashboardStats(updatedMovements);
-
-    state.data = {
-      ...state.data,
-      processedAt: new Date().toISOString(),
-      movements: updatedMovements,
-      summary: dashboardStats.summary,
-    };
-
-    state.data = saveDashboardData(state.data);
+    setDashboardData(
+      state,
+      buildDashboardDataWithMovements(state.data, updatedMovements, {
+        processedAt: new Date().toISOString(),
+      })
+    );
 
     renderDashboard({
       debugRawText: buildCategoryDebugMessage({
@@ -136,7 +132,7 @@ function shouldApplyCategoryToSimilarMovements({
   const formattedCategory = formatCategory(newCategory);
   const description = targetMovement.description ?? "Movimiento desconocido";
 
-  return window.confirm(
+  return confirmAction(
     `¿Aplicar "${formattedCategory}" a ${similarMovements.length} ${movementLabel} similar(es)?\n\n` +
       `Movimiento base:\n${description}\n\n` +
       "Si cancelas, solo se actualizará el movimiento seleccionado."
@@ -157,7 +153,7 @@ function shouldRememberCategoryRule({ targetMovement, newCategory }) {
   const formattedCategory = formatCategory(newCategory);
   const description = targetMovement.description ?? "Movimiento desconocido";
 
-  return window.confirm(
+  return confirmAction(
     `¿Recordar "${formattedCategory}" para futuros movimientos con una descripción similar?\n\n` +
       `Patrón:\n${learnedRule.pattern}\n\n` +
       `Movimiento base:\n${description}\n\n` +

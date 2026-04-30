@@ -14,9 +14,7 @@ import {
   mergeProcessedFiles,
   parseNuMovements,
 } from "../domain/movements.js";
-import { buildDashboardStats } from "../domain/dashboard-stats.js";
 import { partitionMovementsByValidation } from "../domain/movement-validation.js";
-import { saveDashboardData } from "../services/storage.service.js";
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
 import { formatError } from "../utils/formatters.js";
 import {
@@ -25,6 +23,11 @@ import {
   formatPdfImportDiagnostics,
   summarizePdfImportDiagnostics,
 } from "./import-diagnostics.js";
+import {
+  buildDashboardDataWithMovements,
+  resetDashboardPagination,
+  setDashboardData,
+} from "./dashboard-actions.js";
 
 export function createPdfInputChangeHandler({ elements, state, renderDashboard }) {
   return async function handlePdfInputChange(event) {
@@ -254,25 +257,23 @@ function applyParsedResult({ state, rawText, fileName, renderDashboard }) {
     : [];
 
   const mergedMovements = mergeMovementsById(previousMovements, validMovements);
-  const dashboardStats = buildDashboardStats(mergedMovements);
   const processedAt = new Date().toISOString();
+  const nextData = buildDashboardDataWithMovements(
+    state.data,
+    mergedMovements,
+    {
+      fileName,
+      files: mergeProcessedFiles(state.data?.files, fileName, {
+        legacyFileName: state.data?.fileName,
+        legacyProcessedAt: state.data?.processedAt,
+        currentProcessedAt: processedAt,
+      }),
+      processedAt,
+    }
+  );
 
-  state.data = {
-    ...state.data,
-    fileName,
-    files: mergeProcessedFiles(state.data?.files, fileName, {
-      legacyFileName: state.data?.fileName,
-      legacyProcessedAt: state.data?.processedAt,
-      currentProcessedAt: processedAt,
-    }),
-    processedAt,
-    movements: mergedMovements,
-    summary: dashboardStats.summary,
-  };
-
-  state.data = saveDashboardData(state.data);
-
-  state.tablePagination.page = 1;
+  setDashboardData(state, nextData);
+  resetDashboardPagination(state);
 
   renderDashboard();
 

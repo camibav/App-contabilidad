@@ -13,9 +13,9 @@ import {
   getRecurringExpenseExclusions,
   saveRecurringExpenseExclusions,
 } from "../services/recurring-expenses-storage.service.js";
-import { saveDashboardData } from "../services/storage.service.js";
 import { formatError } from "../utils/formatters.js";
-import { resetTablePaginationState } from "./dashboard-state.js";
+import { resetDashboardPagination, setDashboardData } from "./dashboard-actions.js";
+import { confirmAction } from "./confirm-action.js";
 import {
   buildBackupFileName,
   buildDashboardBackup,
@@ -99,7 +99,7 @@ async function handleRestoreBackupJson({
     return;
   }
 
-  const confirmed = window.confirm(
+  const confirmed = confirmAction(
     "Restaurar este backup reemplazará los datos guardados actuales, las reglas de categoría aprendidas y las exclusiones de gastos recurrentes en este navegador. ¿Deseas continuar?"
   );
 
@@ -119,11 +119,9 @@ async function handleRestoreBackupJson({
       learnedCategoryRules
     );
 
-    state.data = restoredData;
-
-    resetTablePaginationState(state);
+    resetDashboardPagination(state);
     clearFilterControls(elements);
-    state.data = saveDashboardData(state.data);
+    setDashboardData(state, restoredData);
     saveLearnedCategoryRules(learnedCategoryRules);
     saveRecurringExpenseExclusions(recurringExpenseExclusions);
 
