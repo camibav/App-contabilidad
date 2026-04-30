@@ -1,7 +1,12 @@
 import { STORAGE_KEY } from "../config/storage.js";
+import { stampDashboardDataVersion } from "../domain/dashboard-data-schema.js";
 
 export function saveDashboardData(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  const versionedData = stampDashboardDataVersion(data);
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(versionedData));
+
+  return versionedData;
 }
 
 export function getSavedDashboardData() {

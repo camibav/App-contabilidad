@@ -4,13 +4,7 @@ import {
   setOutput,
   setStatus,
 } from "../ui/dashboard-ui.js";
-import { buildDashboardStats } from "../domain/dashboard-stats.js";
-import { partitionMovementsByValidation } from "../domain/movement-validation.js";
-import {
-  mergeMovementsById,
-  normalizeProcessedFiles,
-  normalizeStoredMovement,
-} from "../domain/movements.js";
+import { normalizeDashboardData } from "../domain/dashboard-data-schema.js";
 import {
   getLearnedCategoryRules,
   saveLearnedCategoryRules,
@@ -129,7 +123,7 @@ async function handleRestoreBackupJson({
 
     resetTablePaginationState(state);
     clearFilterControls(elements);
-    saveDashboardData(state.data);
+    state.data = saveDashboardData(state.data);
     saveLearnedCategoryRules(learnedCategoryRules);
     saveRecurringExpenseExclusions(recurringExpenseExclusions);
 
@@ -153,7 +147,7 @@ async function handleRestoreBackupJson({
 
     setStatus(
       elements,
-      `Backup restaurado correctamente. Archivos: ${state.data.files.length}. Movimientos: ${state.data.movements.length}. Reglas aprendidas: ${learnedCategoryRules.length}. Exclusiones recurrentes: ${recurringExpenseExclusions.length}.`
+      `Backup restaurado correctamente. Archivos: ${state.data.files.length}. Movimientos: ${state.data.movements.length}. Versión de datos: ${state.data.schemaVersion}. Reglas aprendidas: ${learnedCategoryRules.length}. Exclusiones recurrentes: ${recurringExpenseExclusions.length}.`
     );
   } catch (error) {
     console.error(error);
@@ -166,33 +160,15 @@ async function handleRestoreBackupJson({
 }
 
 function normalizeRestoredDashboardData(rawData, learnedCategoryRules = []) {
-  const normalizedFiles = normalizeProcessedFiles(rawData);
-  const fallbackSource =
-    rawData.fileName ?? normalizedFiles.at(-1)?.name ?? "Origen desconocido";
-
-  const normalizedMovements = rawData.movements.map((movement) =>
-    normalizeStoredMovement(movement, fallbackSource, {
-      learnedCategoryRules,
-    })
-  );
-
-  const deduplicatedMovements = mergeMovementsById([], normalizedMovements);
-  const { validMovements } = partitionMovementsByValidation(deduplicatedMovements);
+  const { data, validMovements } = normalizeDashboardData(rawData, {
+    learnedCategoryRules,
+  });
 
   if (!validMovements.length) {
     throw new Error("El backup no contiene movimientos válidos para restaurar.");
   }
 
-  const dashboardStats = buildDashboardStats(validMovements);
-
-  return {
-    ...rawData,
-    fileName: fallbackSource,
-    files: normalizedFiles,
-    processedAt: rawData.processedAt ?? new Date().toISOString(),
-    movements: validMovements,
-    summary: dashboardStats.summary,
-  };
+  return data;
 }
 
 function getStoredMovementsCount(state) {

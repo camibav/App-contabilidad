@@ -102,7 +102,7 @@ export function createCategoryChangeHandler({ elements, state, renderDashboard }
       summary: dashboardStats.summary,
     };
 
-    saveDashboardData(state.data);
+    state.data = saveDashboardData(state.data);
 
     renderDashboard({
       debugRawText: buildCategoryDebugMessage({

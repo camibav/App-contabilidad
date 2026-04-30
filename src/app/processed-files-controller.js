@@ -42,7 +42,7 @@ function handleProcessedFileAction({ elements, state, renderDashboard, event }) 
   };
 
   resetTablePaginationState(state);
-  saveDashboardData(state.data);
+  state.data = saveDashboardData(state.data);
 
   renderDashboard({
     debugRawText: `--- ARCHIVO PROCESADO ELIMINADO: ${fileName} ---`,

@@ -270,7 +270,7 @@ function applyParsedResult({ state, rawText, fileName, renderDashboard }) {
     summary: dashboardStats.summary,
   };
 
-  saveDashboardData(state.data);
+  state.data = saveDashboardData(state.data);
 
   state.tablePagination.page = 1;
 

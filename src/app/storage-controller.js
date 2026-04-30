@@ -9,13 +9,7 @@ import {
   saveDashboardData,
 } from "../services/storage.service.js";
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
-import {
-  mergeMovementsById,
-  normalizeProcessedFiles,
-  normalizeStoredMovement,
-} from "../domain/movements.js";
-import { buildDashboardStats } from "../domain/dashboard-stats.js";
-import { partitionMovementsByValidation } from "../domain/movement-validation.js";
+import { normalizeDashboardData } from "../domain/dashboard-data-schema.js";
 import {
   resetDashboardData,
   resetTablePaginationState,
@@ -31,39 +25,23 @@ export function loadSavedData({ elements, state, renderDashboard }) {
       return;
     }
 
-    const normalizedFiles = normalizeProcessedFiles(parsedData);
-    const fallbackSource =
-      normalizedFiles.at(-1)?.name ?? parsedData.fileName ?? "Origen desconocido";
-
     const learnedCategoryRules = getLearnedCategoryRules();
-    const normalizedMovements = parsedData.movements.map((movement) =>
-      normalizeStoredMovement(movement, fallbackSource, {
-        learnedCategoryRules,
-      })
-    );
-
-    const deduplicatedMovements = mergeMovementsById([], normalizedMovements);
-    const { validMovements, invalidMovements } = partitionMovementsByValidation(
-      deduplicatedMovements
-    );
+    const {
+      data: normalizedData,
+      validMovements,
+      invalidMovements,
+      wasMigrated,
+      previousSchemaVersion,
+    } = normalizeDashboardData(parsedData, {
+      learnedCategoryRules,
+    });
 
     if (!validMovements.length) {
       clearEmptySavedDashboardData({ elements, state });
       return;
     }
 
-    const dashboardStats = buildDashboardStats(validMovements);
-
-    state.data = {
-      ...parsedData,
-      fileName: normalizedFiles.at(-1)?.name ?? fallbackSource,
-      files: normalizedFiles,
-      processedAt: parsedData.processedAt ?? new Date().toISOString(),
-      movements: validMovements,
-      summary: dashboardStats.summary,
-    };
-
-    saveDashboardData(state.data);
+    state.data = saveDashboardData(normalizedData);
     renderDashboard();
 
     setOutput(
@@ -77,6 +55,9 @@ export function loadSavedData({ elements, state, renderDashboard }) {
         filesCount: state.data.files.length,
         validMovementsCount: validMovements.length,
         invalidMovementsCount: invalidMovements.length,
+        wasMigrated,
+        previousSchemaVersion,
+        schemaVersion: state.data.schemaVersion,
       })
     );
   } catch (error) {
@@ -96,14 +77,26 @@ function buildSavedDataStatus({
   filesCount,
   validMovementsCount,
   invalidMovementsCount,
+  wasMigrated,
+  previousSchemaVersion,
+  schemaVersion,
 }) {
-  const baseMessage = `Datos guardados cargados. Archivos: ${filesCount}. Movimientos: ${validMovementsCount}.`;
+  const baseMessage = `Datos guardados cargados. Archivos: ${filesCount}. Movimientos: ${validMovementsCount}. Versión de datos: ${schemaVersion}.`;
+  const details = [];
 
-  if (!invalidMovementsCount) {
+  if (wasMigrated) {
+    details.push(`Migración aplicada desde versión ${previousSchemaVersion}.`);
+  }
+
+  if (invalidMovementsCount) {
+    details.push(`Movimientos descartados por validación: ${invalidMovementsCount}.`);
+  }
+
+  if (!details.length) {
     return baseMessage;
   }
 
-  return `${baseMessage} Movimientos descartados por validación: ${invalidMovementsCount}.`;
+  return `${baseMessage} ${details.join(" ")}`;
 }
 
 function hasStoredMovements(parsedData) {

@@ -34,6 +34,7 @@ describe("backup", () => {
 
     expect(backup.app).toBe("nubank-dashboard");
     expect(backup.version).toBeGreaterThanOrEqual(1);
+    expect(backup.data.schemaVersion).toBeGreaterThanOrEqual(1);
     expect(backup.data.movements).toHaveLength(1);
     expect(backup.learnedCategoryRules).toEqual([]);
     expect(backup.recurringExpenseExclusions).toEqual([]);

@@ -1,4 +1,5 @@
 import { normalizeLearnedCategoryRules } from "../domain/category-learning.js";
+import { stampDashboardDataVersion } from "../domain/dashboard-data-schema.js";
 import { normalizeRecurringExpenseExclusions } from "../services/recurring-expenses-storage.service.js";
 
 const BACKUP_APP_NAME = "nubank-dashboard";
@@ -111,12 +112,12 @@ function normalizeBackupData(data) {
   const files = Array.isArray(data?.files) ? data.files : [];
   const movements = Array.isArray(data?.movements) ? data.movements : [];
 
-  return {
+  return stampDashboardDataVersion({
     ...data,
     fileName: data?.fileName ?? files.at(-1)?.name ?? "Origen desconocido",
     files,
     processedAt: data?.processedAt ?? new Date().toISOString(),
     movements,
     summary: data?.summary ?? null,
-  };
+  });
 }
