@@ -1,5 +1,6 @@
 import {
   appendOutput,
+  renderImportDiagnosticsPanel,
   resetFileInput,
   setOutput,
   setStatus,
@@ -79,6 +80,11 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
       })
     );
 
+    renderImportDiagnosticsPanel(elements, [], {
+      status: "processing",
+      rejectedFiles,
+    });
+
     try {
       for (const [index, file] of pdfFiles.entries()) {
         const fileNumber = index + 1;
@@ -121,6 +127,10 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
           });
 
           importDiagnostics.push(result.diagnostics);
+          renderImportDiagnosticsPanel(elements, importDiagnostics, {
+            processingErrors,
+            rejectedFiles,
+          });
 
           appendOutput(
             elements,
@@ -158,6 +168,10 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
       });
 
       if (!state.data) {
+        renderImportDiagnosticsPanel(elements, importDiagnostics, {
+          processingErrors,
+          rejectedFiles,
+        });
         setStatus(
           elements,
           "El procesamiento finalizó, pero no se detectaron movimientos.",
@@ -174,6 +188,12 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
         totalMovements: state.data.movements.length,
         storageError,
       });
+      renderImportDiagnosticsPanel(elements, importDiagnostics, {
+        processingErrors,
+        rejectedFiles,
+        storageError,
+      });
+
       const importSummary = summarizePdfImportDiagnostics(importDiagnostics);
       const hasDiscardedMovements = importSummary.invalidMovementsCount > 0;
       const hasNoImportedMovements = importSummary.validMovementsCount === 0;

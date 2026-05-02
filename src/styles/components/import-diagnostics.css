@@ -1,0 +1,204 @@
+/* Import diagnostics panel
+   Sugerencia modular: mantener este bloque en src/styles/components/import-diagnostics.css. */
+.import-diagnostics-panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.import-diagnostics-content {
+  display: grid;
+  gap: 1rem;
+}
+
+.import-diagnostics-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 1.4fr);
+  gap: 1rem;
+  align-items: stretch;
+  padding: 1rem;
+  border: 1px solid var(--color-border, rgba(148, 163, 184, 0.35));
+  border-radius: 1rem;
+  background: var(--color-surface, #ffffff);
+}
+
+.import-diagnostics-summary--success {
+  border-color: color-mix(in srgb, var(--color-success, #16a34a) 34%, transparent);
+}
+
+.import-diagnostics-summary--warning {
+  border-color: color-mix(in srgb, var(--color-warning, #b45309) 40%, transparent);
+}
+
+.import-diagnostics-summary-main {
+  display: grid;
+  align-content: center;
+  gap: 0.35rem;
+}
+
+.import-diagnostics-eyebrow,
+.import-diagnostics-file-label {
+  width: fit-content;
+  color: var(--color-text-muted, #64748b);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.import-diagnostics-summary-main strong {
+  color: var(--color-text, #172033);
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+}
+
+.import-diagnostics-summary-main p {
+  margin: 0;
+  color: var(--color-text-muted, #475569);
+  line-height: 1.55;
+}
+
+.import-diagnostics-metrics,
+.import-diagnostics-file-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: 0.65rem;
+}
+
+.import-diagnostics-metric,
+.import-diagnostics-file-metric {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border, rgba(148, 163, 184, 0.28));
+  border-radius: 0.85rem;
+  background: var(--color-surface-muted, #f8fafc);
+}
+
+.import-diagnostics-metric span,
+.import-diagnostics-file-metric span {
+  color: var(--color-text-muted, #64748b);
+  font-size: 0.78rem;
+}
+
+.import-diagnostics-metric strong,
+.import-diagnostics-file-metric strong {
+  color: var(--color-text, #172033);
+  font-size: 1.05rem;
+}
+
+.import-diagnostics-issues,
+.import-diagnostics-files {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.import-diagnostics-issue,
+.import-diagnostics-file,
+.import-diagnostics-empty-state {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border, rgba(148, 163, 184, 0.35));
+  border-radius: 1rem;
+  background: var(--color-surface, #ffffff);
+}
+
+.import-diagnostics-issue {
+  border-color: color-mix(in srgb, var(--color-warning, #b45309) 35%, transparent);
+  background: color-mix(in srgb, var(--color-warning, #b45309) 7%, var(--color-surface, #ffffff));
+}
+
+.import-diagnostics-issue strong,
+.import-diagnostics-file-header strong,
+.import-diagnostics-empty-state strong,
+.import-diagnostics-detail-list strong {
+  color: var(--color-text, #172033);
+}
+
+.import-diagnostics-issue span,
+.import-diagnostics-file-period {
+  color: var(--color-text-muted, #64748b);
+  font-size: 0.86rem;
+}
+
+.import-diagnostics-issue p,
+.import-diagnostics-empty-state p {
+  margin: 0;
+  color: var(--color-text-muted, #475569);
+  line-height: 1.55;
+}
+
+.import-diagnostics-file-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.import-diagnostics-file-header > div {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.import-diagnostics-file-header strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-diagnostics-file-period {
+  flex: 0 0 auto;
+  padding: 0.25rem 0.55rem;
+  border-radius: 999px;
+  background: var(--color-surface-muted, #f8fafc);
+}
+
+.import-diagnostics-detail-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.import-diagnostics-detail-list ul {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.import-diagnostics-detail-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 0.75rem;
+  color: var(--color-text-muted, #475569);
+  background: var(--color-surface-muted, #f8fafc);
+}
+
+.import-diagnostics-detail-list li span {
+  max-width: 55%;
+  overflow: hidden;
+  color: var(--color-text, #172033);
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .import-diagnostics-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .import-diagnostics-file-header,
+  .import-diagnostics-detail-list li {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .import-diagnostics-detail-list li span {
+    max-width: 100%;
+    text-align: left;
+  }
+}

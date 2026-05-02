@@ -49,6 +49,7 @@
 
     <nav class="dashboard-nav" aria-label="Navegación del dashboard">
       <a href="#upload-section">Carga</a>
+      <a href="#import-diagnostics-section">Importación</a>
       <a href="#summary-section">Resumen</a>
       <a href="#data-quality-section">Calidad</a>
       <a href="#filters-section">Filtros</a>
@@ -76,6 +77,23 @@
         <input id="pdfInput" type="file" accept="application/pdf" multiple />
         <p id="status" class="status">No se ha seleccionado ningún PDF.</p>
       </div>
+    </section>
+
+    <section id="import-diagnostics-section" class="card import-diagnostics-section">
+      <div class="section-header">
+        <div>
+          <h2>Diagnóstico de importación</h2>
+          <p class="section-description">
+            Revisa el resultado técnico de la última carga de PDF: líneas leídas, candidatos detectados, movimientos válidos, descartes y estado de almacenamiento.
+          </p>
+        </div>
+      </div>
+
+      <div
+        id="importDiagnosticsPanel"
+        class="import-diagnostics-panel"
+        aria-live="polite"
+      ></div>
     </section>
 
     <section id="summary-section" class="summary-grid" aria-label="Resumen acumulado">

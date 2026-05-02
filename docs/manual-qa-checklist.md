@@ -59,6 +59,10 @@ Usar este checklist después de cambios en parser, persistencia, filtros, backup
 
 ## Diagnóstico
 
+- [ ] Revisar el panel visible "Diagnóstico de importación" después de importar un PDF.
+- [ ] Confirmar que muestre líneas leídas, candidatos, movimientos parseados, válidos, descartes y errores.
+- [ ] Confirmar que el estado sea de éxito cuando todos los movimientos sean válidos.
+- [ ] Confirmar que el estado sea de advertencia cuando haya descartes, errores o fallo de almacenamiento.
 - [ ] Revisar el panel debug después de importar un PDF.
 - [ ] Confirmar que muestre líneas legibles, movimientos detectados, válidos y descartados.
 - [ ] Confirmar que muestre diagnóstico avanzado del parser.

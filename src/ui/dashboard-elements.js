@@ -12,6 +12,7 @@ export function getDashboardElements() {
     ),
 
     processedFilesList: document.getElementById("processedFilesList"),
+    importDiagnosticsPanel: document.getElementById("importDiagnosticsPanel"),
     dashboardInsightsList: document.getElementById("dashboardInsightsList"),
     dataQualityPanel: document.getElementById("dataQualityPanel"),
 
@@ -79,6 +80,7 @@ export function getDashboardElements() {
   const optionalElements = [
     "clearSavedDataButton",
     "dataQualityPanel",
+    "importDiagnosticsPanel",
     "confirmDialog",
     "confirmDialogTitle",
     "confirmDialogMessage",

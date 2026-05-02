@@ -4,6 +4,7 @@ export * from "./processed-files-ui.js";
 export * from "./filters-ui.js";
 export * from "./insights-ui.js";
 export * from "./data-quality-ui.js";
+export * from "./import-diagnostics-ui.js";
 export * from "./charts-ui.js";
 export * from "./category-breakdown-ui.js";
 export * from "./top-expenses-ui.js";

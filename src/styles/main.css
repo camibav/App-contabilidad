@@ -29,6 +29,6 @@
 @import "./components/learned-rules.css";
 @import "./components/movements-table.css";
 @import "./components/empty-state.css";
-@import "./src/styles/components/confirm-dialog.css";
-
+@import "./components/confirm-dialog.css";
+@import "./components/import-diagnostics.css";
 @import "./utilities/amount.css";
