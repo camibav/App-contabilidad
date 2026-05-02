@@ -1,5 +1,5 @@
 import { removeProcessedFileFromDashboardData } from "../domain/movements.js";
-import { setStatus } from "../ui/dashboard-ui.js";
+import { clearImportDiagnosticsPanel, setStatus } from "../ui/dashboard-ui.js";
 import {
   buildDashboardDataWithMovements,
   resetDashboardPagination,
@@ -49,6 +49,10 @@ async function handleProcessedFileAction({ elements, state, renderDashboard, eve
 
   resetDashboardPagination(state);
   setDashboardData(state, nextData);
+
+  if (!state.data.movements.length) {
+    clearImportDiagnosticsPanel(elements);
+  }
 
   renderDashboard({
     debugRawText: `--- ARCHIVO PROCESADO ELIMINADO: ${fileName} ---`,

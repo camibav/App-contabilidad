@@ -1,5 +1,6 @@
 import {
   clearFilterControls,
+  clearImportDiagnosticsPanel,
   clearOutput,
   renderBackupButtonState,
   renderCategoryBreakdown,
@@ -90,6 +91,11 @@ export function clearDashboardSections({
   if (resetOutput) {
     clearOutput(elements);
   }
+
+  // El diagnóstico de importación representa la última carga de PDF.
+  // Al limpiar el dashboard no debe quedar visible porque ya no corresponde
+  // con el estado actual de datos, archivos, reglas ni exclusiones.
+  clearImportDiagnosticsPanel(elements);
 
   renderDashboardFilterOptions(elements, {
     movements: viewModel.movements,

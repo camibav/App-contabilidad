@@ -1,13 +1,20 @@
 import {
   clearFilterControls,
+  clearImportDiagnosticsPanel,
+  resetFileInput,
   setOutput,
   setStatus,
 } from "../ui/dashboard-ui.js";
 import {
+  clearLastDashboardStorageError,
   clearSavedDashboardData,
   getSavedDashboardData,
 } from "../services/storage.service.js";
-import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
+import {
+  clearLearnedCategoryRules,
+  getLearnedCategoryRules,
+} from "../services/category-rules-storage.service.js";
+import { clearRecurringExpenseExclusions } from "../services/recurring-expenses-storage.service.js";
 import { normalizeDashboardData } from "../domain/dashboard-data-schema.js";
 import { resetDashboardDataState, setDashboardData } from "./dashboard-actions.js";
 import { clearDashboardView } from "./dashboard-view.js";
@@ -61,9 +68,8 @@ export function loadSavedData({ elements, state, renderDashboard }) {
     console.error(error);
 
     clearSavedDashboardData();
-    resetDashboardDataState(state);
-    clearFilterControls(elements);
-    clearDashboardView({ elements, state, resetFilters: true, resetOutput: true });
+    clearLastDashboardStorageError();
+    clearDashboardRuntimeView({ elements, state });
 
     setStatus(elements, "Los datos guardados estaban corruptos y fueron eliminados.");
   }
@@ -101,9 +107,8 @@ function hasStoredMovements(parsedData) {
 
 function clearEmptySavedDashboardData({ elements, state }) {
   clearSavedDashboardData();
-  resetDashboardDataState(state);
-  clearFilterControls(elements);
-  clearDashboardView({ elements, state, resetFilters: true, resetOutput: true });
+  clearLastDashboardStorageError();
+  clearDashboardRuntimeView({ elements, state });
 }
 
 export function createClearSavedDataHandler({ elements, state }) {
@@ -123,11 +128,27 @@ export function createClearSavedDataHandler({ elements, state }) {
       return;
     }
 
-    clearSavedDashboardData();
-    resetDashboardDataState(state);
-    clearFilterControls(elements);
-    clearDashboardView({ elements, state, resetFilters: true, resetOutput: true });
+    clearAllDashboardPersistedData();
+    clearDashboardRuntimeView({ elements, state });
 
-    setStatus(elements, "Los datos guardados del dashboard fueron eliminados.");
+    setStatus(
+      elements,
+      "Los datos guardados del dashboard, reglas aprendidas, exclusiones recurrentes y diagnóstico de importación fueron eliminados."
+    );
   };
+}
+
+function clearAllDashboardPersistedData() {
+  clearSavedDashboardData();
+  clearLearnedCategoryRules();
+  clearRecurringExpenseExclusions();
+  clearLastDashboardStorageError();
+}
+
+function clearDashboardRuntimeView({ elements, state }) {
+  resetDashboardDataState(state);
+  clearFilterControls(elements);
+  clearDashboardView({ elements, state, resetFilters: true, resetOutput: true });
+  clearImportDiagnosticsPanel(elements);
+  resetFileInput(elements);
 }

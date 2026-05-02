@@ -1,5 +1,6 @@
 import {
   clearFilterControls,
+  clearImportDiagnosticsPanel,
   renderBackupButtonState,
   setOutput,
   setStatus,
@@ -127,6 +128,7 @@ async function handleRestoreBackupJson({
 
     resetDashboardPagination(state);
     clearFilterControls(elements);
+    clearImportDiagnosticsPanel(elements);
     setDashboardData(state, restoredData);
     saveLearnedCategoryRules(learnedCategoryRules);
     saveRecurringExpenseExclusions(recurringExpenseExclusions);
