@@ -1,14 +1,14 @@
-import { CATEGORY_RULES } from "../config/categories.js";
-import {
-  cleanDescription,
-  extractStatementYear,
-  getMonthNumber,
-  normalizeLine,
-  normalizeText,
-  parseColombianCurrency,
-} from "../utils/text.js";
-import { inferCategoryFromLearnedRules } from "./category-learning.js";
+import { normalizeLine, normalizeText } from "../utils/text.js";
 import { normalizeMovementCategory } from "./movement-validation.js";
+import { inferCategoryFromDescription } from "./parser/nu-category-inference.js";
+import {
+  buildMovementCandidates,
+  parseMovementCandidate,
+} from "./parser/nu-movement-parser.js";
+import {
+  inferStatementMonthFromFileName,
+  inferStatementYear,
+} from "./parser/nu-statement-period.js";
 
 export function parseNuMovements(
   rawText,
@@ -102,120 +102,6 @@ export function parseNuMovements(
   }
 
   return movements;
-}
-
-
-const MOVEMENT_DATE_PATTERN =
-  /^[^\d]*(\d{1,2})\s+(ene|feb|mar|abr|may|jun|jul|ago|sep|oct|nov|dic)\b(.*)$/i;
-const MOVEMENT_AMOUNT_PATTERN = /([+-])\s*\$?\s*([\d.,]+)\s*$/;
-
-function buildMovementCandidates(lines = []) {
-  const candidates = [];
-  let currentCandidate = null;
-
-  for (const line of lines) {
-    if (isIgnoredParserLine(line)) {
-      continue;
-    }
-
-    if (startsMovementCandidate(line)) {
-      if (currentCandidate && hasMovementAmount(currentCandidate.lines)) {
-        candidates.push(currentCandidate);
-      }
-
-      currentCandidate = {
-        lines: [line],
-      };
-
-      if (hasMovementAmount(currentCandidate.lines)) {
-        candidates.push(currentCandidate);
-        currentCandidate = null;
-      }
-
-      continue;
-    }
-
-    if (!currentCandidate) {
-      continue;
-    }
-
-    currentCandidate.lines.push(line);
-
-    if (hasMovementAmount(currentCandidate.lines)) {
-      candidates.push(currentCandidate);
-      currentCandidate = null;
-    }
-  }
-
-  if (currentCandidate && hasMovementAmount(currentCandidate.lines)) {
-    candidates.push(currentCandidate);
-  }
-
-  return candidates;
-}
-
-function parseMovementCandidate(candidate, statementYear) {
-  const lines = Array.isArray(candidate?.lines) ? candidate.lines : [];
-
-  if (!lines.length) {
-    return null;
-  }
-
-  const dateMatch = lines[0].match(MOVEMENT_DATE_PATTERN);
-
-  if (!dateMatch) {
-    return null;
-  }
-
-  const [, rawDay, monthText, firstDescriptionPart = ""] = dateMatch;
-  const body = [firstDescriptionPart, ...lines.slice(1)]
-    .join(" ")
-    .replace(/\s+/g, " ")
-    .trim();
-  const amountMatch = body.match(MOVEMENT_AMOUNT_PATTERN);
-
-  if (!amountMatch) {
-    return null;
-  }
-
-  const [, sign, rawAmount] = amountMatch;
-  const description = body.replace(MOVEMENT_AMOUNT_PATTERN, "").trim();
-  const cleanMovementDescription = cleanDescription(description);
-
-  if (!cleanMovementDescription) {
-    return null;
-  }
-
-  const day = rawDay.padStart(2, "0");
-  const month = getMonthNumber(monthText);
-  const date = `${statementYear}-${month}-${day}`;
-  const monthKey = `${statementYear}-${month}`;
-  const amount = parseColombianCurrency(rawAmount);
-  const signedAmount = sign === "-" ? amount * -1 : amount;
-  const type = signedAmount >= 0 ? "income" : "expense";
-  const rawLine = lines.join(" ");
-
-  return {
-    date,
-    monthKey,
-    description,
-    cleanMovementDescription,
-    signedAmount,
-    type,
-    rawLine,
-  };
-}
-
-function startsMovementCandidate(line) {
-  return MOVEMENT_DATE_PATTERN.test(line);
-}
-
-function hasMovementAmount(lines) {
-  return MOVEMENT_AMOUNT_PATTERN.test(lines.join(" ").trim());
-}
-
-function isIgnoredParserLine(line) {
-  return /^---\s*P[ÁA]GINA\s+\d+\s*(OCR)?\s*---$/i.test(line);
 }
 
 export function mergeMovementsById(previousMovements = [], newMovements = []) {
@@ -380,10 +266,11 @@ export function normalizeStoredMovement(
     },
   });
 
-  const category = normalizeMovementCategory(
-    shouldInferCategory ? inferredCategory.category : existingCategory,
-    type
-  );
+  const categoryInput = shouldInferCategory
+    ? inferredCategory.category
+    : existingCategory;
+  const category = normalizeMovementCategory(categoryInput, type);
+  const categoryWasCorrected = String(categoryInput ?? "").trim() !== category;
 
   const occurrenceIndex = normalizeMovementOccurrenceIndex(
     movement.occurrenceIndex
@@ -423,6 +310,7 @@ export function normalizeStoredMovement(
       existingCategorySource,
       shouldInferCategory,
       inferredCategorySource: inferredCategory.source,
+      categoryWasCorrected,
     }),
     amount,
     type,
@@ -584,56 +472,17 @@ function shouldRecalculateCategory({
   );
 }
 
-function inferCategoryFromDescription(description, type, options = {}) {
-  if (type === "income") {
-    return {
-      category: "income",
-      source: "auto",
-    };
-  }
-
-  const learnedRule = inferCategoryFromLearnedRules(
-    options.movementLike ?? {
-      description,
-      type,
-    },
-    options.learnedCategoryRules
-  );
-
-  if (learnedRule) {
-    return {
-      category: learnedRule.category,
-      source: "manual-learning",
-    };
-  }
-
-  const normalizedDescription = normalizeText(description);
-
-  for (const rule of CATEGORY_RULES) {
-    const hasMatch = rule.keywords.some((keyword) =>
-      normalizedDescription.includes(normalizeText(keyword))
-    );
-
-    if (hasMatch) {
-      return {
-        category: rule.category,
-        source: "auto",
-      };
-    }
-  }
-
-  return {
-    category: "uncategorized",
-    source: "default",
-  };
-}
-
 function getCategorySource({
   category,
   existingCategorySource,
   shouldInferCategory,
   inferredCategorySource,
+  categoryWasCorrected = false,
 }) {
+  if (categoryWasCorrected) {
+    return category === "uncategorized" ? "default" : "auto";
+  }
+
   if (!shouldInferCategory && existingCategorySource) {
     return existingCategorySource;
   }
@@ -792,61 +641,4 @@ function isValidProcessedFileName(fileName) {
   }
 
   return normalizedFileName.toLowerCase().endsWith(".pdf");
-}
-
-function inferStatementYear({ rawText, sourceFileName }) {
-  return extractStatementYearFromFileName(sourceFileName) ?? extractStatementYear(rawText);
-}
-
-function extractStatementYearFromFileName(fileName) {
-  const normalizedFileName = normalizeText(fileName);
-
-  return normalizedFileName.match(/\b(20\d{2})\b/)?.[1] ?? null;
-}
-
-function inferStatementMonthFromFileName(fileName, fallbackYear) {
-  const normalizedFileName = normalizeText(fileName);
-  const year = extractStatementYearFromFileName(fileName) ?? fallbackYear;
-
-  if (!year) {
-    return null;
-  }
-
-  const monthEntries = [
-    ["ENERO", "01"],
-    ["ENE", "01"],
-    ["FEBRERO", "02"],
-    ["FEB", "02"],
-    ["MARZO", "03"],
-    ["MAR", "03"],
-    ["ABRIL", "04"],
-    ["ABR", "04"],
-    ["MAYO", "05"],
-    ["MAY", "05"],
-    ["JUNIO", "06"],
-    ["JUN", "06"],
-    ["JULIO", "07"],
-    ["JUL", "07"],
-    ["AGOSTO", "08"],
-    ["AGO", "08"],
-    ["SEPTIEMBRE", "09"],
-    ["SETIEMBRE", "09"],
-    ["SEP", "09"],
-    ["OCTUBRE", "10"],
-    ["OCT", "10"],
-    ["NOVIEMBRE", "11"],
-    ["NOV", "11"],
-    ["DICIEMBRE", "12"],
-    ["DIC", "12"],
-  ];
-
-  const matchedMonth = monthEntries.find(([monthName]) =>
-    normalizedFileName.includes(monthName)
-  );
-
-  if (!matchedMonth) {
-    return null;
-  }
-
-  return `${year}-${matchedMonth[1]}`;
 }

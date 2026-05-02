@@ -221,6 +221,27 @@ describe("movements", () => {
     );
 
     expect(movement.category).toBe("income");
+    expect(movement.categorySource).toBe("auto");
     expect(movement.occurrenceIndex).toBe(1);
+  });
+
+  it("no conserva origen manual cuando corrige una categoría incompatible", () => {
+    const movement = normalizeStoredMovement(
+      {
+        id: "stored-2",
+        date: "2026-02-01",
+        month: "2026-02",
+        description: "Gasto mal categorizado",
+        category: "income",
+        categorySource: "manual",
+        amount: -100000,
+        type: "expense",
+        source: "febrero.pdf",
+      },
+      "febrero.pdf"
+    );
+
+    expect(movement.category).toBe("uncategorized");
+    expect(movement.categorySource).toBe("default");
   });
 });
