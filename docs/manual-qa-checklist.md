@@ -1,25 +1,73 @@
-# Checklist manual de QA - Dashboard Nu Bank
+# Checklist manual de QA — Dashboard Nu Bank
 
-## Eliminación de datos guardados
+Usar este checklist después de cambios en parser, persistencia, filtros, backup o UI.
 
-1. Cargar dos o más PDF válidos.
-2. Verificar que aparezcan datos en resumen, tabla, gráficas, archivos procesados y diagnóstico de importación.
-3. Asignar manualmente una categoría y guardar una regla aprendida.
-4. Excluir un gasto recurrente.
-5. Hacer clic en **Eliminar datos guardados** y confirmar.
-6. Validar que queden en estado vacío:
-   - Resumen.
-   - Archivos procesados.
-   - Diagnóstico de importación.
-   - Indicadores.
-   - Gráficas.
-   - Desglose por categoría.
-   - Mayores gastos.
-   - Gastos recurrentes.
-   - Gastos recurrentes excluidos.
-   - Gastos fijos vs variables.
-   - Movimientos sin clasificar.
-   - Reglas de categoría aprendidas.
-   - Tabla de movimientos.
-   - Debug/output.
-7. Recargar el navegador y validar que los datos no reaparezcan.
+## Flujo de importación
+
+- [ ] Cargar un PDF de febrero y verificar que se rendericen movimientos.
+- [ ] Cargar un PDF de marzo y verificar que febrero no se borre.
+- [ ] Reimportar el PDF de febrero y verificar que no se dupliquen movimientos.
+- [ ] Cargar un archivo no PDF y verificar que sea rechazado sin perder datos previos.
+- [ ] Cargar un PDF sin texto embebido y verificar el fallback OCR.
+
+## Diagnóstico de importación
+
+- [ ] Verificar que el panel muestre líneas leídas, candidatos, movimientos parseados, válidos y descartes.
+- [ ] Verificar que los descartes del parser se muestren solo cuando existan.
+- [ ] Verificar que al eliminar datos guardados el panel de diagnóstico vuelva a estado vacío.
+
+## Categorías
+
+- [ ] Cambiar una categoría manualmente desde la tabla.
+- [ ] Aplicar la categoría a movimientos similares cuando el modal lo solicite.
+- [ ] Guardar una regla aprendida.
+- [ ] Recargar el navegador y verificar que la regla aprendida se conserve.
+- [ ] Eliminar una regla aprendida y verificar que desaparezca del panel.
+
+## Filtros y tabla
+
+- [ ] Filtrar por mes.
+- [ ] Filtrar por archivo.
+- [ ] Filtrar por tipo.
+- [ ] Filtrar por categoría.
+- [ ] Buscar por descripción ignorando mayúsculas y tildes.
+- [ ] Cambiar filas por página a 5, 10, 50 y 100.
+- [ ] Ordenar por fecha, tipo y monto.
+
+## Tabla responsive
+
+- [ ] Abrir el dashboard en un ancho menor a 760 px.
+- [ ] Verificar que cada movimiento se muestre como tarjeta y no como tabla horizontal comprimida.
+- [ ] Verificar que cada dato tenga etiqueta visible: Fecha, Origen, Descripción, Categoría, Tipo y Monto.
+- [ ] Verificar que el selector de categoría siga funcionando en móvil.
+- [ ] Verificar que la paginación y el selector de filas por página no se desborden.
+- [ ] Verificar que el estado vacío de la tabla se vea correctamente en móvil.
+
+## Archivos procesados
+
+- [ ] Eliminar un archivo procesado.
+- [ ] Verificar que los movimientos exclusivos de ese archivo se eliminen.
+- [ ] Verificar que movimientos compartidos por otro archivo se conserven.
+
+## Exportación y backup
+
+- [ ] Exportar CSV filtrado.
+- [ ] Abrir el CSV y verificar columnas, montos y textos con caracteres especiales.
+- [ ] Exportar backup JSON.
+- [ ] Eliminar datos guardados.
+- [ ] Restaurar backup JSON.
+- [ ] Verificar que movimientos, reglas aprendidas y exclusiones recurrentes se recuperen.
+
+## Gastos recurrentes
+
+- [ ] Cargar al menos dos meses con un gasto repetido.
+- [ ] Verificar que aparezca como recurrente.
+- [ ] Excluir el gasto recurrente.
+- [ ] Verificar que se actualice gastos fijos vs variables.
+- [ ] Restaurar la exclusión.
+
+## Persistencia
+
+- [ ] Recargar la página y verificar que los datos sigan cargados.
+- [ ] Ejecutar la app en modo incógnito y verificar comportamiento sin datos previos.
+- [ ] Eliminar datos guardados y verificar que el dashboard quede vacío.

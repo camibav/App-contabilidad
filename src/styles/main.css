@@ -31,4 +31,5 @@
 @import "./components/empty-state.css";
 @import "./components/confirm-dialog.css";
 @import "./components/import-diagnostics.css";
+@import "./components/movements-table-responsive.css";
 @import "./utilities/amount.css";

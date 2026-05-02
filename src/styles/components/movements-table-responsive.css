@@ -1,0 +1,155 @@
+/* Movements table responsive behavior
+   Sugerencia modular: mantener este bloque en src/styles/components/movements-table-responsive.css
+   o integrarlo al final de src/styles/components/movements-table.css si prefieres un solo módulo para la tabla. */
+
+@media (max-width: 760px) {
+  .table-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .page-size-control,
+  .pagination-controls {
+    width: 100%;
+  }
+
+  .page-size-control {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .page-size-control select {
+    width: 100%;
+  }
+
+  .pagination-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+  }
+
+  .pagination-status {
+    grid-column: 1 / -1;
+    text-align: center;
+  }
+
+  .pagination-controls > button {
+    width: 100%;
+  }
+
+  .table-wrapper {
+    overflow-x: visible;
+  }
+
+  .movements-table {
+    min-width: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+
+  .movements-table thead {
+    display: none;
+  }
+
+  .movements-table,
+  .movements-table tbody,
+  .movements-table tr,
+  .movements-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .movements-table tbody {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .movements-table tr {
+    padding: 0.95rem;
+    border: 1px solid var(--color-border, rgba(148, 163, 184, 0.35));
+    border-radius: 1rem;
+    background: var(--color-surface, #ffffff);
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  }
+
+  .movements-table td {
+    display: grid;
+    grid-template-columns: minmax(6.5rem, 0.42fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    align-items: start;
+    padding: 0.58rem 0;
+    border: 0;
+    border-bottom: 1px solid var(--color-border-subtle, rgba(148, 163, 184, 0.18));
+  }
+
+  .movements-table td:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .movements-table td:first-child {
+    padding-top: 0;
+  }
+
+  .movements-table td::before {
+    content: attr(data-label);
+    color: var(--color-text-muted, #64748b);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.055em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .movements-table .description-cell,
+  .movements-table .source-cell {
+    overflow-wrap: anywhere;
+  }
+
+  .movements-table .category-cell .category-control {
+    width: 100%;
+  }
+
+  .movements-table .category-cell select {
+    width: 100%;
+  }
+
+  .movements-table .amount {
+    text-align: right;
+  }
+
+  .movements-table .type-cell {
+    align-items: center;
+  }
+
+  .movements-table .movements-empty-state {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+
+  .movements-table .movements-empty-state::before {
+    content: none;
+  }
+
+  .movement-table-row--empty {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .movements-table tr {
+    padding: 0.85rem;
+    border-radius: 0.9rem;
+  }
+
+  .movements-table td {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
+  .movements-table .amount {
+    text-align: left;
+  }
+}
