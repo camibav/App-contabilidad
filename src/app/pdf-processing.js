@@ -12,10 +12,11 @@ import {
 import {
   mergeMovementsById,
   mergeProcessedFiles,
-  parseNuMovements,
+  parseNuMovementsWithDiagnostics,
 } from "../domain/movements.js";
 import { partitionMovementsByValidation } from "../domain/movement-validation.js";
 import { getLearnedCategoryRules } from "../services/category-rules-storage.service.js";
+import { getLastDashboardStorageError } from "../services/storage.service.js";
 import { formatError } from "../utils/formatters.js";
 import {
   buildImportStatusMessage,
@@ -165,17 +166,24 @@ export function createPdfInputChangeHandler({ elements, state, renderDashboard }
         return;
       }
 
+      const storageError = getLastDashboardStorageError();
       const statusMessage = buildImportStatusMessage({
         diagnostics: importDiagnostics,
         processingErrorsCount: processingErrors.length,
         filesCount: state.data.files.length,
         totalMovements: state.data.movements.length,
+        storageError,
       });
       const importSummary = summarizePdfImportDiagnostics(importDiagnostics);
       const hasDiscardedMovements = importSummary.invalidMovementsCount > 0;
       const hasNoImportedMovements = importSummary.validMovementsCount === 0;
 
-      if (processingErrors.length || hasDiscardedMovements || hasNoImportedMovements) {
+      if (
+        processingErrors.length ||
+        hasDiscardedMovements ||
+        hasNoImportedMovements ||
+        storageError
+      ) {
         setStatus(elements, statusMessage, "warning");
         return;
       }
@@ -245,9 +253,10 @@ async function extractTextFromPdfFile({ elements, file, fileNumber, totalFiles }
 
 function applyParsedResult({ state, rawText, fileName, renderDashboard }) {
   const learnedCategoryRules = getLearnedCategoryRules();
-  const newMovements = parseNuMovements(rawText, fileName, {
+  const parsedResult = parseNuMovementsWithDiagnostics(rawText, fileName, {
     learnedCategoryRules,
   });
+  const newMovements = parsedResult.movements;
   const { validMovements, invalidMovements } = partitionMovementsByValidation(
     newMovements
   );
@@ -284,6 +293,7 @@ function applyParsedResult({ state, rawText, fileName, renderDashboard }) {
     validMovements,
     invalidMovements,
     totalMovements: mergedMovements.length,
+    parserDiagnostics: parsedResult.parserDiagnostics,
   });
 
   return {

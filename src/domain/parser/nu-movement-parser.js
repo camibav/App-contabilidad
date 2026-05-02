@@ -11,18 +11,35 @@ import {
   startsMovementCandidate,
 } from "./nu-parser-patterns.js";
 
-export function buildMovementCandidates(lines = []) {
-  const candidates = [];
-  let currentCandidate = null;
+const DEFAULT_DISCARDED_SAMPLE_LIMIT = 5;
 
-  for (const line of lines) {
+export function buildMovementCandidates(lines = []) {
+  return buildMovementCandidatesWithDiagnostics(lines).candidates;
+}
+
+export function buildMovementCandidatesWithDiagnostics(lines = []) {
+  const safeLines = Array.isArray(lines) ? lines : [];
+  const candidates = [];
+  const discardedCandidates = [];
+  let currentCandidate = null;
+  let ignoredPageMarkerLinesCount = 0;
+  let orphanLinesCount = 0;
+
+  for (const line of safeLines) {
     if (isIgnoredParserLine(line)) {
+      ignoredPageMarkerLinesCount += 1;
       continue;
     }
 
     if (startsMovementCandidate(line)) {
-      if (currentCandidate && hasMovementAmount(currentCandidate.lines)) {
-        candidates.push(currentCandidate);
+      if (currentCandidate) {
+        if (hasMovementAmount(currentCandidate.lines)) {
+          candidates.push(currentCandidate);
+        } else {
+          discardedCandidates.push(
+            buildDiscardedCandidate(currentCandidate.lines, "missing_amount")
+          );
+        }
       }
 
       currentCandidate = {
@@ -38,6 +55,7 @@ export function buildMovementCandidates(lines = []) {
     }
 
     if (!currentCandidate) {
+      orphanLinesCount += 1;
       continue;
     }
 
@@ -49,24 +67,48 @@ export function buildMovementCandidates(lines = []) {
     }
   }
 
-  if (currentCandidate && hasMovementAmount(currentCandidate.lines)) {
-    candidates.push(currentCandidate);
+  if (currentCandidate) {
+    if (hasMovementAmount(currentCandidate.lines)) {
+      candidates.push(currentCandidate);
+    } else {
+      discardedCandidates.push(
+        buildDiscardedCandidate(currentCandidate.lines, "missing_amount")
+      );
+    }
   }
 
-  return candidates;
+  return {
+    candidates,
+    diagnostics: {
+      readableLinesCount: safeLines.length,
+      candidateGroupsCount: candidates.length + discardedCandidates.length,
+      candidatesWithAmountCount: candidates.length,
+      discardedIncompleteCandidatesCount: discardedCandidates.length,
+      ignoredPageMarkerLinesCount,
+      orphanLinesCount,
+      discardedCandidateSamples: discardedCandidates.slice(
+        0,
+        DEFAULT_DISCARDED_SAMPLE_LIMIT
+      ),
+    },
+  };
 }
 
 export function parseMovementCandidate(candidate, statementYear) {
+  return parseMovementCandidateWithDiagnostics(candidate, statementYear).movement;
+}
+
+export function parseMovementCandidateWithDiagnostics(candidate, statementYear) {
   const lines = Array.isArray(candidate?.lines) ? candidate.lines : [];
 
   if (!lines.length) {
-    return null;
+    return buildParseResult(null, "empty_candidate", lines);
   }
 
   const dateMatch = lines[0].match(MOVEMENT_DATE_PATTERN);
 
   if (!dateMatch) {
-    return null;
+    return buildParseResult(null, "invalid_date", lines);
   }
 
   const [, rawDay, monthText, firstDescriptionPart = ""] = dateMatch;
@@ -77,7 +119,7 @@ export function parseMovementCandidate(candidate, statementYear) {
   const amountMatch = body.match(MOVEMENT_AMOUNT_PATTERN);
 
   if (!amountMatch) {
-    return null;
+    return buildParseResult(null, "missing_amount", lines);
   }
 
   const [, sign, rawAmount] = amountMatch;
@@ -85,25 +127,48 @@ export function parseMovementCandidate(candidate, statementYear) {
   const cleanMovementDescription = cleanDescription(description);
 
   if (!cleanMovementDescription) {
-    return null;
+    return buildParseResult(null, "empty_description", lines);
+  }
+
+  const amount = parseColombianCurrency(rawAmount);
+
+  if (!Number.isFinite(amount)) {
+    return buildParseResult(null, "invalid_amount", lines);
   }
 
   const day = rawDay.padStart(2, "0");
   const month = getMonthNumber(monthText);
   const date = `${statementYear}-${month}-${day}`;
   const monthKey = `${statementYear}-${month}`;
-  const amount = parseColombianCurrency(rawAmount);
   const signedAmount = sign === "-" ? amount * -1 : amount;
   const type = signedAmount >= 0 ? "income" : "expense";
   const rawLine = lines.join(" ");
 
+  return buildParseResult(
+    {
+      date,
+      monthKey,
+      description,
+      cleanMovementDescription,
+      signedAmount,
+      type,
+      rawLine,
+    },
+    null,
+    lines
+  );
+}
+
+function buildParseResult(movement, reason, lines) {
   return {
-    date,
-    monthKey,
-    description,
-    cleanMovementDescription,
-    signedAmount,
-    type,
-    rawLine,
+    movement,
+    discardedCandidate: reason ? buildDiscardedCandidate(lines, reason) : null,
+  };
+}
+
+function buildDiscardedCandidate(lines, reason) {
+  return {
+    reason,
+    rawLines: Array.isArray(lines) ? [...lines] : [],
   };
 }

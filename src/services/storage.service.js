@@ -1,12 +1,16 @@
 import { STORAGE_KEY } from "../config/storage.js";
 import { stampDashboardDataVersion } from "../domain/dashboard-data-schema.js";
 
+let lastDashboardStorageError = null;
+
 export function saveDashboardData(data) {
   const versionedData = stampDashboardDataVersion(data);
 
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(versionedData));
+    lastDashboardStorageError = null;
   } catch (error) {
+    lastDashboardStorageError = error;
     console.error("No se pudieron guardar los datos del dashboard.", error);
   }
 
@@ -25,4 +29,13 @@ export function getSavedDashboardData() {
 
 export function clearSavedDashboardData() {
   localStorage.removeItem(STORAGE_KEY);
+  lastDashboardStorageError = null;
+}
+
+export function getLastDashboardStorageError() {
+  return lastDashboardStorageError;
+}
+
+export function clearLastDashboardStorageError() {
+  lastDashboardStorageError = null;
 }

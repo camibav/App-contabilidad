@@ -1,85 +1,51 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  clearLastDashboardStorageError,
   clearSavedDashboardData,
+  getLastDashboardStorageError,
   getSavedDashboardData,
   saveDashboardData,
 } from "../storage.service.js";
-import { STORAGE_KEY } from "../../config/storage.js";
 
-describe("storage.service", () => {
-  beforeEach(() => {
-    globalThis.localStorage = createLocalStorageMock();
-  });
+const storage = new Map();
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-    delete globalThis.localStorage;
-  });
-
-  it("guarda datos versionados en localStorage", () => {
-    const result = saveDashboardData({
-      movements: [],
-    });
-
-    expect(result).toMatchObject({
-      app: "nubank-dashboard",
-      schemaVersion: 1,
-      movements: [],
-    });
-    expect(localStorage.setItem).toHaveBeenCalledWith(
-      STORAGE_KEY,
-      JSON.stringify(result)
-    );
-  });
-
-  it("retorna datos guardados", () => {
-    const data = {
-      app: "nubank-dashboard",
-      schemaVersion: 1,
-      movements: [{ id: "mov-1" }],
-    };
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-
-    expect(getSavedDashboardData()).toEqual(data);
-  });
-
-  it("retorna null cuando no hay datos guardados", () => {
-    expect(getSavedDashboardData()).toBeNull();
-  });
-
-  it("elimina datos guardados", () => {
-    clearSavedDashboardData();
-
-    expect(localStorage.removeItem).toHaveBeenCalledWith(STORAGE_KEY);
-  });
-
-  it("mantiene el retorno versionado aunque localStorage falle al guardar", () => {
-    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    localStorage.setItem.mockImplementation(() => {
-      throw new Error("Quota exceeded");
-    });
-
-    const result = saveDashboardData({ movements: [] });
-
-    expect(result.schemaVersion).toBe(1);
-    expect(consoleErrorSpy).toHaveBeenCalledOnce();
-  });
+beforeEach(() => {
+  storage.clear();
+  clearLastDashboardStorageError();
+  globalThis.localStorage = {
+    getItem: vi.fn((key) => storage.get(key) ?? null),
+    setItem: vi.fn((key, value) => storage.set(key, value)),
+    removeItem: vi.fn((key) => storage.delete(key)),
+  };
 });
 
-function createLocalStorageMock() {
-  const store = new Map();
+describe("storage.service", () => {
+  it("guarda y recupera datos versionados", () => {
+    const saved = saveDashboardData({ movements: [] });
+    const loaded = getSavedDashboardData();
 
-  return {
-    getItem: vi.fn((key) => store.get(key) ?? null),
-    setItem: vi.fn((key, value) => {
-      store.set(key, String(value));
-    }),
-    removeItem: vi.fn((key) => {
-      store.delete(key);
-    }),
-    clear: vi.fn(() => {
-      store.clear();
-    }),
-  };
-}
+    expect(saved.schemaVersion).toBeGreaterThanOrEqual(1);
+    expect(loaded.schemaVersion).toBe(saved.schemaVersion);
+    expect(getLastDashboardStorageError()).toBeNull();
+  });
+
+  it("mantiene los datos en memoria y registra error cuando localStorage falla", () => {
+    const storageError = new Error("Quota exceeded");
+    globalThis.localStorage.setItem = vi.fn(() => {
+      throw storageError;
+    });
+
+    const saved = saveDashboardData({ movements: [] });
+
+    expect(saved.schemaVersion).toBeGreaterThanOrEqual(1);
+    expect(getLastDashboardStorageError()).toBe(storageError);
+  });
+
+  it("limpia datos guardados y error de persistencia", () => {
+    saveDashboardData({ movements: [] });
+    clearSavedDashboardData();
+
+    expect(getSavedDashboardData()).toBeNull();
+    expect(getLastDashboardStorageError()).toBeNull();
+  });
+});

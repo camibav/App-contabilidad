@@ -2,8 +2,8 @@ import { normalizeLine, normalizeText } from "../utils/text.js";
 import { normalizeMovementCategory } from "./movement-validation.js";
 import { inferCategoryFromDescription } from "./parser/nu-category-inference.js";
 import {
-  buildMovementCandidates,
-  parseMovementCandidate,
+  buildMovementCandidatesWithDiagnostics,
+  parseMovementCandidateWithDiagnostics,
 } from "./parser/nu-movement-parser.js";
 import {
   inferStatementMonthFromFileName,
@@ -11,6 +11,18 @@ import {
 } from "./parser/nu-statement-period.js";
 
 export function parseNuMovements(
+  rawText,
+  sourceFileName = "Unknown source",
+  options = {}
+) {
+  return parseNuMovementsWithDiagnostics(
+    rawText,
+    sourceFileName,
+    options
+  ).movements;
+}
+
+export function parseNuMovementsWithDiagnostics(
   rawText,
   sourceFileName = "Unknown source",
   options = {}
@@ -25,19 +37,25 @@ export function parseNuMovements(
     statementYear
   );
 
-  const lines = rawText
+  const lines = String(rawText ?? "")
     .split("\n")
     .map((line) => normalizeLine(line))
     .filter(Boolean);
 
-  const movementCandidates = buildMovementCandidates(lines);
+  const { candidates: movementCandidates, diagnostics: candidateDiagnostics } =
+    buildMovementCandidatesWithDiagnostics(lines);
   const movements = [];
+  const discardedParsedCandidates = [];
   const occurrenceCounts = new Map();
 
   for (const candidate of movementCandidates) {
-    const parsedCandidate = parseMovementCandidate(candidate, statementYear);
+    const { movement: parsedCandidate, discardedCandidate } =
+      parseMovementCandidateWithDiagnostics(candidate, statementYear);
 
     if (!parsedCandidate) {
+      if (discardedCandidate) {
+        discardedParsedCandidates.push(discardedCandidate);
+      }
       continue;
     }
 
@@ -101,7 +119,21 @@ export function parseNuMovements(
     });
   }
 
-  return movements;
+  return {
+    movements,
+    parserDiagnostics: {
+      fileName: sourceFileName,
+      statementYear,
+      statementMonth,
+      ...candidateDiagnostics,
+      parsedMovementsCount: movements.length,
+      discardedParsedCandidatesCount: discardedParsedCandidates.length,
+      discardedCandidateSamples: [
+        ...(candidateDiagnostics.discardedCandidateSamples ?? []),
+        ...discardedParsedCandidates,
+      ].slice(0, 5),
+    },
+  };
 }
 
 export function mergeMovementsById(previousMovements = [], newMovements = []) {

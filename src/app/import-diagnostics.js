@@ -7,6 +7,7 @@ export function buildPdfImportDiagnostics({
   validMovements = [],
   invalidMovements = [],
   totalMovements = 0,
+  parserDiagnostics = null,
 } = {}) {
   const readableLines = getReadableLines(rawText);
   const safeDetectedMovements = Array.isArray(detectedMovements)
@@ -26,6 +27,7 @@ export function buildPdfImportDiagnostics({
     totalMovements: Math.max(0, Number(totalMovements) || 0),
     validationErrors: summarizeValidationErrors(safeInvalidMovements),
     invalidMovementSamples: buildInvalidMovementSamples(safeInvalidMovements),
+    parserDiagnostics: normalizeParserDiagnostics(parserDiagnostics),
   };
 }
 
@@ -71,6 +73,7 @@ export function formatPdfImportDiagnostics(diagnostic = {}) {
     `Movimientos acumulados en el dashboard: ${normalizeCount(diagnostic.totalMovements)}`,
     validationSummary,
     invalidSamples,
+    formatParserDiagnostics(diagnostic.parserDiagnostics),
   ]
     .filter(Boolean)
     .join("\n");
@@ -81,17 +84,23 @@ export function buildImportStatusMessage({
   processingErrorsCount = 0,
   filesCount = 0,
   totalMovements = 0,
+  storageError = null,
 } = {}) {
   const summary = summarizePdfImportDiagnostics(diagnostics);
   const baseMessage = processingErrorsCount
     ? `Procesamiento finalizado con ${processingErrorsCount} error(es).`
     : "Procesamiento finalizado.";
 
+  const storageWarning = storageError
+    ? " Los datos se procesaron, pero no pudieron guardarse en este navegador."
+    : "";
+
   return (
     `${baseMessage} Archivos: ${normalizeCount(filesCount)}. ` +
     `Total de movimientos: ${normalizeCount(totalMovements)}. ` +
     `Importados en esta carga: ${summary.validMovementsCount}. ` +
-    `Descartados: ${summary.invalidMovementsCount}.`
+    `Descartados: ${summary.invalidMovementsCount}.` +
+    storageWarning
   );
 }
 
@@ -175,6 +184,85 @@ function formatInvalidMovementSamples(samples = []) {
       const errors = Array.isArray(sample.errors) ? sample.errors.join(" | ") : "";
 
       return `- ${sample.date} · ${sample.description} · ${sample.amount} · ${errors}`;
+    }),
+  ].join("\n");
+}
+
+
+function normalizeParserDiagnostics(parserDiagnostics) {
+  if (!parserDiagnostics || typeof parserDiagnostics !== "object") {
+    return null;
+  }
+
+  return {
+    statementYear: String(parserDiagnostics.statementYear ?? "").trim(),
+    statementMonth: String(parserDiagnostics.statementMonth ?? "").trim(),
+    readableLinesCount: normalizeCount(parserDiagnostics.readableLinesCount),
+    candidateGroupsCount: normalizeCount(parserDiagnostics.candidateGroupsCount),
+    candidatesWithAmountCount: normalizeCount(
+      parserDiagnostics.candidatesWithAmountCount
+    ),
+    parsedMovementsCount: normalizeCount(parserDiagnostics.parsedMovementsCount),
+    discardedIncompleteCandidatesCount: normalizeCount(
+      parserDiagnostics.discardedIncompleteCandidatesCount
+    ),
+    discardedParsedCandidatesCount: normalizeCount(
+      parserDiagnostics.discardedParsedCandidatesCount
+    ),
+    ignoredPageMarkerLinesCount: normalizeCount(
+      parserDiagnostics.ignoredPageMarkerLinesCount
+    ),
+    orphanLinesCount: normalizeCount(parserDiagnostics.orphanLinesCount),
+    discardedCandidateSamples: Array.isArray(
+      parserDiagnostics.discardedCandidateSamples
+    )
+      ? parserDiagnostics.discardedCandidateSamples.slice(0, 5)
+      : [],
+  };
+}
+
+function formatParserDiagnostics(parserDiagnostics) {
+  if (!parserDiagnostics) {
+    return "";
+  }
+
+  const discardedTotal =
+    parserDiagnostics.discardedIncompleteCandidatesCount +
+    parserDiagnostics.discardedParsedCandidatesCount;
+  const sampleLines = formatParserDiscardedSamples(
+    parserDiagnostics.discardedCandidateSamples
+  );
+
+  return [
+    "Diagnóstico avanzado del parser:",
+    `- Año inferido: ${parserDiagnostics.statementYear || "Desconocido"}`,
+    `- Mes del extracto inferido: ${parserDiagnostics.statementMonth || "No detectado"}`,
+    `- Candidatos detectados: ${parserDiagnostics.candidateGroupsCount}`,
+    `- Candidatos con monto: ${parserDiagnostics.candidatesWithAmountCount}`,
+    `- Movimientos parseados: ${parserDiagnostics.parsedMovementsCount}`,
+    `- Candidatos descartados por parser: ${discardedTotal}`,
+    `- Marcadores de página ignorados: ${parserDiagnostics.ignoredPageMarkerLinesCount}`,
+    `- Líneas fuera de movimientos: ${parserDiagnostics.orphanLinesCount}`,
+    sampleLines,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+function formatParserDiscardedSamples(samples = []) {
+  if (!Array.isArray(samples) || !samples.length) {
+    return "";
+  }
+
+  return [
+    "Muestras descartadas por parser:",
+    ...samples.map((sample) => {
+      const reason = String(sample.reason ?? "unknown_reason").trim();
+      const rawLines = Array.isArray(sample.rawLines)
+        ? sample.rawLines.join(" | ")
+        : "";
+
+      return `- ${reason}: ${rawLines}`;
     }),
   ].join("\n");
 }
