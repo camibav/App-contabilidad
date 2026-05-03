@@ -20,9 +20,9 @@
       </div>
 
       <nav class="dashboard-nav" aria-label="Navegación del dashboard">
+        <a href="#summary-section">Resumen</a>
         <a href="#upload-section">Carga</a>
         <a href="#import-diagnostics-section">Importación</a>
-        <a href="#summary-section">Resumen</a>
         <a href="#data-quality-section">Calidad</a>
         <a href="#filters-section">Filtros</a>
         <a href="#charts-section">Gráficas</a>
@@ -88,42 +88,6 @@
       </div>
     </header>
 
-    <section id="upload-section" class="card upload-card">
-      <div class="upload-card-main">
-        <span class="upload-card-icon" aria-hidden="true">PDF</span>
-
-        <div>
-          <label class="upload-card-title" for="pdfInput">
-            Cargar extractos Nu Bank
-          </label>
-          <p class="upload-card-description">
-            Selecciona uno o varios archivos PDF para actualizar el dashboard, mantener el historial acumulado y revisar los movimientos detectados.
-          </p>
-        </div>
-      </div>
-
-      <div class="upload-card-control">
-        <p id="status" class="status">No se ha seleccionado ningún PDF.</p>
-      </div>
-    </section>
-
-    <section id="import-diagnostics-section" class="card import-diagnostics-section">
-      <div class="section-header">
-        <div>
-          <h2>Diagnóstico de importación</h2>
-          <p class="section-description">
-            Revisa el resultado técnico de la última carga de PDF: líneas leídas, candidatos detectados, movimientos válidos, descartes y estado de almacenamiento.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="importDiagnosticsPanel"
-        class="import-diagnostics-panel"
-        aria-live="polite"
-      ></div>
-    </section>
-
     <section id="summary-section" class="summary-grid" aria-label="Resumen acumulado">
       <article class="summary-card summary-card--income">
         <span class="summary-label">Ingresos</span>
@@ -150,108 +114,150 @@
       </article>
     </section>
 
-    <section id="data-quality-section" class="card data-quality-section">
-      <div class="section-header">
-        <div>
-          <h2>Calidad de datos</h2>
-          <p class="section-description">
-            Revisa qué tan confiable está la información antes de interpretar gráficas, categorías y tendencias.
-          </p>
+    <div class="dashboard-primary-grid" aria-label="Importación, diagnóstico y archivos">
+      <section id="upload-section" class="card upload-card">
+        <div class="upload-card-main">
+          <span class="upload-card-icon" aria-hidden="true">PDF</span>
+
+          <div>
+            <label class="upload-card-title" for="pdfInput">
+              Cargar extractos Nu Bank
+            </label>
+            <p class="upload-card-description">
+              Selecciona uno o varios archivos PDF para actualizar el dashboard, mantener el historial acumulado y revisar los movimientos detectados.
+            </p>
+          </div>
         </div>
+
+        <div class="upload-card-control">
+          <p id="status" class="status">No se ha seleccionado ningún PDF.</p>
+        </div>
+      </section>
+
+      <div class="dashboard-diagnostics-stack">
+        <section id="import-diagnostics-section" class="card import-diagnostics-section">
+          <div class="section-header">
+            <div>
+              <h2>Diagnóstico de importación</h2>
+              <p class="section-description">
+                Revisa el resultado técnico de la última carga de PDF: líneas leídas, candidatos detectados, movimientos válidos, descartes y estado de almacenamiento.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="importDiagnosticsPanel"
+            class="import-diagnostics-panel"
+            aria-live="polite"
+          ></div>
+        </section>
+
+        <section id="data-quality-section" class="card data-quality-section">
+          <div class="section-header">
+            <div>
+              <h2>Calidad de datos</h2>
+              <p class="section-description">
+                Revisa qué tan confiable está la información antes de interpretar gráficas, categorías y tendencias.
+              </p>
+            </div>
+          </div>
+
+          <div
+            id="dataQualityPanel"
+            class="data-quality-grid"
+            aria-live="polite"
+          ></div>
+        </section>
       </div>
 
-      <div
-        id="dataQualityPanel"
-        class="data-quality-grid"
-        aria-live="polite"
-      ></div>
-    </section>
-
-    <section class="card">
-      <div class="section-header">
-        <div>
-          <h2>Archivos procesados</h2>
-          <p class="section-description">
-            Archivos ya cargados en el dashboard acumulado.
-          </p>
-        </div>
-      </div>
-
-      <ul id="processedFilesList" class="processed-files-list"></ul>
-    </section>
-
-    <section id="filters-section" class="card filters-card">
-      <div class="section-header">
-        <div>
-          <h2>Filtros</h2>
-          <p class="section-description">
-            Filtra movimientos por mes, archivo, tipo, categoría o descripción.
-          </p>
+      <section class="card processed-files-card">
+        <div class="section-header">
+          <div>
+            <h2>Archivos procesados</h2>
+            <p class="section-description">
+              Archivos ya cargados en el dashboard acumulado.
+            </p>
+          </div>
         </div>
 
-        <button id="clearFiltersButton" class="secondary-button" type="button">
-          Limpiar filtros
-        </button>
-      </div>
+        <ul id="processedFilesList" class="processed-files-list"></ul>
+      </section>
+    </div>
 
-      <div class="filters-grid">
-        <div class="filter-field">
-          <label for="monthFilter">Mes</label>
-          <select id="monthFilter">
-            <option value="">Todos los meses</option>
-          </select>
+    <div class="dashboard-filter-insights-grid" aria-label="Filtros e indicadores">
+      <section id="filters-section" class="card filters-card">
+        <div class="section-header">
+          <div>
+            <h2>Filtros</h2>
+            <p class="section-description">
+              Filtra movimientos por mes, archivo, tipo, categoría o descripción.
+            </p>
+          </div>
+
+          <button id="clearFiltersButton" class="secondary-button" type="button">
+            Limpiar filtros
+          </button>
         </div>
 
-        <div class="filter-field">
-          <label for="sourceFilter">Archivo</label>
-          <select id="sourceFilter">
-            <option value="">Todos los archivos</option>
-          </select>
+        <div class="filters-grid">
+          <div class="filter-field">
+            <label for="monthFilter">Mes</label>
+            <select id="monthFilter">
+              <option value="">Todos los meses</option>
+            </select>
+          </div>
+
+          <div class="filter-field">
+            <label for="sourceFilter">Archivo</label>
+            <select id="sourceFilter">
+              <option value="">Todos los archivos</option>
+            </select>
+          </div>
+
+          <div class="filter-field">
+            <label for="typeFilter">Tipo</label>
+            <select id="typeFilter">
+              <option value="">Todos los tipos</option>
+              <option value="income">Ingresos</option>
+              <option value="expense">Gasto</option>
+            </select>
+          </div>
+
+          <div class="filter-field">
+            <label for="categoryFilter">Categoría</label>
+            <select id="categoryFilter">
+              <option value="">Todas las categorías</option>
+            </select>
+          </div>
+
+          <div class="filter-field filter-field--wide">
+            <label for="descriptionSearch">Descripción</label>
+            <input
+              id="descriptionSearch"
+              type="search"
+              placeholder="Buscar por descripción..."
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="card insights-card">
+        <div class="section-header">
+          <div>
+            <h2>Indicadores</h2>
+            <p class="section-description">
+              Observaciones clave basadas en los datos filtrados actuales.
+            </p>
+          </div>
         </div>
 
-        <div class="filter-field">
-          <label for="typeFilter">Tipo</label>
-          <select id="typeFilter">
-            <option value="">Todos los tipos</option>
-            <option value="income">Ingresos</option>
-            <option value="expense">Gasto</option>
-          </select>
-        </div>
-
-        <div class="filter-field">
-          <label for="categoryFilter">Categoría</label>
-          <select id="categoryFilter">
-            <option value="">Todas las categorías</option>
-          </select>
-        </div>
-
-        <div class="filter-field filter-field--wide">
-          <label for="descriptionSearch">Descripción</label>
-          <input
-            id="descriptionSearch"
-            type="search"
-            placeholder="Buscar por descripción..."
-          />
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="section-header">
-        <div>
-          <h2>Indicadores</h2>
-          <p class="section-description">
-            Observaciones clave basadas en los datos filtrados actuales.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="dashboardInsightsList"
-        class="insights-grid"
-        aria-live="polite"
-      ></div>
-    </section>
+        <div
+          id="dashboardInsightsList"
+          class="insights-grid"
+          aria-live="polite"
+        ></div>
+      </section>
+    </div>
 
     <section id="charts-section" class="card">
       <div class="section-header">
