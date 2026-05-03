@@ -35,40 +35,57 @@
     <main class="container dashboard-content">
     <header class="page-header">
       <div class="page-header-content">
-        <span class="page-eyebrow">Dashboard financiero personal</span>
-
         <h1>Dashboard de contabilidad</h1>
 
         <p class="page-description">
-          Carga extractos PDF de Nu Bank, consolida tus movimientos y revisa tus ingresos,
-          gastos, categorías y tendencias desde una sola vista.
+          Visión completa de tus finanzas personales.
         </p>
-
-        <div class="page-header-highlights" aria-label="Capacidades principales del dashboard">
-          <span>PDF Nu Bank</span>
-          <span>Categorización</span>
-          <span>Análisis acumulado</span>
-        </div>
       </div>
 
-      <aside class="page-header-panel" aria-label="Flujo de procesamiento del dashboard">
-        <span class="page-header-panel-label">Flujo de análisis</span>
+      <div class="page-header-actions" aria-label="Acciones principales del dashboard">
+        <input
+          id="pdfInput"
+          class="page-header-file-input"
+          type="file"
+          accept="application/pdf"
+          multiple
+        />
 
-        <ol class="page-header-steps">
-          <li>
-            <span>01</span>
-            <strong>Cargar PDF</strong>
-          </li>
-          <li>
-            <span>02</span>
-            <strong>Procesar movimientos</strong>
-          </li>
-          <li>
-            <span>03</span>
-            <strong>Visualizar resultados</strong>
-          </li>
-        </ol>
-      </aside>
+        <label class="secondary-button page-header-import-button" for="pdfInput">
+          Importar PDF
+        </label>
+
+        <button
+          id="exportFilteredCsvButton"
+          class="secondary-button export-button"
+          type="button"
+        >
+          Exportar CSV filtrado
+        </button>
+
+        <button
+          id="exportBackupJsonButton"
+          class="secondary-button backup-button"
+          type="button"
+        >
+          Exportar backup JSON
+        </button>
+
+        <button
+          id="importBackupJsonButton"
+          class="secondary-button restore-button"
+          type="button"
+        >
+          Restaurar backup JSON
+        </button>
+
+        <input
+          id="backupJsonInput"
+          type="file"
+          accept="application/json,.json"
+          hidden
+        />
+      </div>
     </header>
 
     <section id="upload-section" class="card upload-card">
@@ -86,7 +103,6 @@
       </div>
 
       <div class="upload-card-control">
-        <input id="pdfInput" type="file" accept="application/pdf" multiple />
         <p id="status" class="status">No se ha seleccionado ningún PDF.</p>
       </div>
     </section>
@@ -439,37 +455,6 @@
         </div>
 
         <div class="section-actions">
-          <button
-            id="exportFilteredCsvButton"
-            class="secondary-button export-button"
-            type="button"
-          >
-            Exportar CSV filtrado
-          </button>
-
-          <button
-            id="exportBackupJsonButton"
-            class="secondary-button"
-            type="button"
-          >
-            Exportar backup JSON
-          </button>
-
-          <button
-            id="importBackupJsonButton"
-            class="secondary-button"
-            type="button"
-          >
-            Restaurar backup JSON
-          </button>
-
-          <input
-            id="backupJsonInput"
-            type="file"
-            accept="application/json,.json"
-            hidden
-          />
-
           <button
             id="clearSavedDataButton"
             class="secondary-button"
