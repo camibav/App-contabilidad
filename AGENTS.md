@@ -60,4 +60,25 @@ confirmDialog
 confirmDialogTitle
 confirmDialogMessage
 confirmDialogCancelButton
-confirmDialogConfirmButton
+confirmDialogConfirmButton.
+
+## Referencia visual del rediseño
+
+La imagen principal de referencia para el rediseño visual está ubicada en:
+
+`docs/design-reference/dashboard-redesign-reference.png`
+
+Debe usarse únicamente como guía visual para:
+
+- Layout general.
+- Sidebar izquierdo.
+- Header superior.
+- Tarjetas de resumen.
+- Grillas de contenido.
+- Espaciado.
+- Bordes.
+- Colores.
+- Jerarquía visual.
+- Distribución de secciones.
+
+No se deben copiar ni hardcodear los datos numéricos del mockup. Los valores de ingresos, gastos, balance, movimientos, categorías, gráficas y tablas deben seguir viniendo de la lógica JavaScript actual.
