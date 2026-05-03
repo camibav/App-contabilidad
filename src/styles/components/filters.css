@@ -1,19 +1,19 @@
 .filters-card {
-  border-color: rgb(130 10 209 / 14%);
-  background: rgb(255 255 255 / 94%);
+  border-color: var(--color-border);
+  background: var(--color-surface);
 }
 
 .filters-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 12px;
   align-items: end;
 }
 
 .filter-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .filter-field--wide {
@@ -23,7 +23,7 @@
 .filter-field label {
   margin-bottom: 0;
   color: var(--color-text-soft);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 850;
   letter-spacing: 0.01em;
 }
@@ -31,15 +31,15 @@
 .filter-field select,
 .filter-field input {
   width: 100%;
-  min-height: 44px;
+  min-height: 40px;
   margin-bottom: 0;
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
   color: var(--color-text);
-  padding: 10px 12px;
-  font-size: 14px;
-  box-shadow: var(--shadow-sm);
+  padding: 9px 11px;
+  font-size: 13px;
+  box-shadow: var(--shadow-xs);
 }
 
 .filter-field select:focus,
@@ -51,14 +51,6 @@
 
 .filter-field input::placeholder {
   color: var(--color-placeholder);
-}
-
-@media (min-width: 980px) {
-  .filters-card {
-    position: sticky;
-    top: 76px;
-    z-index: 12;
-  }
 }
 
 @media (max-width: 900px) {

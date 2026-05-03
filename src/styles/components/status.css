@@ -2,15 +2,15 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  min-height: 42px;
+  min-height: 38px;
   margin: 0;
   border: 1px solid var(--status-border, var(--color-border));
-  border-radius: var(--radius-md, 10px);
+  border-radius: var(--radius-md, 12px);
   background: var(--status-background, var(--color-surface-muted));
   color: var(--status-color, var(--color-text-soft));
-  padding: 10px 12px;
-  font-size: 14px;
-  font-weight: 700;
+  padding: 9px 11px;
+  font-size: 12px;
+  font-weight: 750;
   line-height: 1.45;
 }
 

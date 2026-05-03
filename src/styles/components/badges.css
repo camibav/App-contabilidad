@@ -1,10 +1,12 @@
 .movement-badge {
-  display: inline-block;
-  min-width: 72px;
-  padding: 4px 8px;
+  display: inline-flex;
+  min-width: 68px;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 9px;
   border-radius: var(--radius-pill);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 850;
   text-align: center;
 }
 

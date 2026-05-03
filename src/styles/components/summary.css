@@ -1,8 +1,8 @@
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 22px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
 .summary-card {
@@ -11,7 +11,8 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  padding: 20px;
+  min-height: 118px;
+  padding: 16px 18px;
   box-shadow: var(--shadow-sm);
   transition:
     border-color var(--transition-fast),
@@ -27,42 +28,61 @@
 .summary-card::before {
   content: "";
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 5px;
-  background: var(--color-brand);
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--summary-accent-bg, var(--color-brand-soft));
 }
 
-.summary-card--income::before {
-  background: var(--color-income);
+.summary-card::after {
+  content: "";
+  position: absolute;
+  top: 29px;
+  right: 29px;
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  background: var(--summary-accent, var(--color-brand));
+  opacity: 0.9;
 }
 
-.summary-card--expense::before {
-  background: var(--color-expense);
+.summary-card--income {
+  --summary-accent: var(--color-income);
+  --summary-accent-bg: var(--color-income-bg);
 }
 
-.summary-card--balance::before {
-  background: var(--color-brand);
+.summary-card--expense {
+  --summary-accent: var(--color-expense);
+  --summary-accent-bg: var(--color-expense-bg);
 }
 
-.summary-card--movements::before {
-  background: var(--color-info);
+.summary-card--balance {
+  --summary-accent: var(--color-brand);
+  --summary-accent-bg: var(--color-brand-soft);
+}
+
+.summary-card--movements {
+  --summary-accent: var(--color-info);
+  --summary-accent-bg: var(--color-info-soft);
 }
 
 .summary-label {
   display: block;
-  margin-bottom: 10px;
+  max-width: calc(100% - 54px);
+  margin-bottom: 12px;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 850;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
 }
 
 .summary-value {
   display: block;
+  max-width: calc(100% - 28px);
   overflow: hidden;
   color: var(--color-text);
-  font-size: clamp(24px, 2.4vw, 32px);
+  font-size: clamp(22px, 2.1vw, 30px);
   font-weight: 950;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -84,10 +104,10 @@
 
 .summary-hint {
   display: block;
-  margin-top: 8px;
+  margin-top: 9px;
   color: var(--color-text-muted);
-  font-size: 13px;
-  font-weight: 650;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 @media (max-width: 900px) {

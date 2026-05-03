@@ -1,15 +1,15 @@
 .insights-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 10px;
 }
 
 .insight-card {
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-muted);
-  padding: 16px;
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  padding: 13px 14px;
+  box-shadow: var(--shadow-xs);
 }
 
 .insight-card--empty {
@@ -19,9 +19,9 @@
 
 .insight-label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: var(--color-text-muted);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 850;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -29,9 +29,9 @@
 
 .insight-value {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   color: var(--color-text);
-  font-size: 20px;
+  font-size: 15px;
   font-weight: 900;
   line-height: 1.25;
 }
@@ -39,7 +39,7 @@
 .insight-description {
   margin: 0;
   color: var(--color-text-soft);
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.45;
 }
 

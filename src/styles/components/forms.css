@@ -13,7 +13,7 @@ select {
 input:not([hidden]),
 select,
 .category-select {
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text);
   transition:
@@ -34,8 +34,8 @@ select:focus,
   width: 100%;
   min-width: 130px;
   border-radius: var(--radius-pill);
-  padding: 7px 11px;
-  font-size: 13px;
+  padding: 7px 10px;
+  font-size: 12px;
   font-weight: 800;
   cursor: pointer;
 }

@@ -1,19 +1,23 @@
 .upload-card {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
-  gap: 22px;
-  align-items: center;
-  border-color: var(--color-border-strong, #d4d4d8);
+  gap: 14px;
+  align-content: start;
+  border-color: rgb(130 10 209 / 16%);
   background:
-    radial-gradient(circle at 12% 10%, var(--color-primary-soft, #ede9fe), transparent 34%),
-    linear-gradient(135deg, var(--color-surface, #ffffff), var(--color-surface-muted, #fafafa));
+    radial-gradient(circle at 10% 0%, rgb(130 10 209 / 10%), transparent 42%),
+    var(--color-surface);
 }
 
 .upload-card-main {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
   min-width: 0;
+  border: 1px dashed rgb(130 10 209 / 42%);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #ffffff, var(--color-surface-muted));
+  padding: clamp(18px, 3vw, 28px);
+  text-align: center;
 }
 
 .upload-card-icon {
@@ -22,9 +26,9 @@
   height: 54px;
   flex: 0 0 auto;
   place-items: center;
-  border: 1px solid var(--color-primary-soft, #ede9fe);
+  border: 1px solid rgb(130 10 209 / 18%);
   border-radius: 18px;
-  background: var(--color-primary-soft, #ede9fe);
+  background: #ffffff;
   color: var(--color-primary-strong, #5b21b6);
   font-size: 13px;
   font-weight: 900;
@@ -34,24 +38,24 @@
 
 .upload-card-title {
   display: block;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   color: var(--color-text, #18181b);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 900;
   line-height: 1.2;
 }
 
 .upload-card-description {
-  max-width: 720px;
+  max-width: 34rem;
   margin: 0;
   color: var(--color-text-soft, #52525b);
-  font-size: 15px;
-  line-height: 1.55;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .upload-card-control {
   display: grid;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -109,7 +113,7 @@
 
 @media (max-width: 560px) {
   .upload-card-main {
-    flex-direction: column;
+    padding: 18px;
   }
 
   .upload-card-icon {

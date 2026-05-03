@@ -1,16 +1,16 @@
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 14px;
 }
 
 .chart-card {
   min-width: 0;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  background: var(--color-surface-muted);
+  background: var(--color-surface);
   padding: 16px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
 }
 
 .chart-card--wide {
@@ -18,26 +18,26 @@
 }
 
 .chart-header {
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .chart-header h3 {
   margin: 0 0 6px;
   color: var(--color-text);
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 15px;
+  font-weight: 900;
 }
 
 .chart-header p {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
 .bar-chart {
   display: grid;
-  gap: 14px;
+  gap: 12px;
 }
 
 .chart-bar-row {
@@ -55,7 +55,7 @@
 .chart-bar-label {
   overflow: hidden;
   color: var(--color-text);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 800;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -64,18 +64,18 @@
 .chart-bar-value {
   flex-shrink: 0;
   color: var(--color-text-soft);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .chart-bar-track {
   width: 100%;
-  height: 14px;
+  height: 9px;
   overflow: hidden;
-  border: 1px solid var(--color-border-strong);
+  border: 0;
   border-radius: var(--radius-pill);
-  background: var(--color-border);
+  background: var(--color-background-strong);
 }
 
 .chart-bar-fill {
@@ -83,7 +83,7 @@
   height: 100%;
   border-radius: inherit;
   background: var(--chart-color-1);
-  box-shadow: inset 0 0 0 1px rgb(17 17 17 / 18%);
+  box-shadow: none;
 }
 
 .chart-bar-row:nth-child(6n + 1) .chart-bar-fill {
@@ -111,7 +111,7 @@
 }
 
 .chart-empty-state {
-  border: 1px dashed var(--color-border-strong);
+  border: 1px dashed var(--color-border);
   border-radius: var(--radius-md);
   padding: 24px 16px;
   color: var(--color-text-muted);
@@ -162,9 +162,9 @@
 .donut-chart-graphic {
   display: grid;
   place-items: center;
-  width: 180px;
-  height: 180px;
-  border: 2px solid var(--color-border-strong);
+  width: 168px;
+  height: 168px;
+  border: 8px solid var(--color-surface-muted);
   border-radius: 50%;
   background: conic-gradient(var(--donut-segments));
 }
@@ -172,8 +172,8 @@
 .donut-chart-hole {
   display: grid;
   place-items: center;
-  width: 112px;
-  height: 112px;
+  width: 104px;
+  height: 104px;
   border-radius: 50%;
   background: var(--color-surface-muted);
   text-align: center;
@@ -250,17 +250,17 @@
 
 .grouped-bar-chart {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .grouped-bar-group {
   display: grid;
-  gap: 10px;
-  padding: 14px 16px;
+  gap: 9px;
+  padding: 12px 14px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
 }
 
 .grouped-bar-header {
@@ -310,11 +310,11 @@
 
 .grouped-bar-track {
   width: 100%;
-  height: 14px;
+  height: 9px;
   overflow: hidden;
-  border: 1px solid var(--color-border-strong);
+  border: 0;
   border-radius: var(--radius-pill);
-  background: var(--color-border);
+  background: var(--color-background-strong);
 }
 
 .grouped-bar-fill {
