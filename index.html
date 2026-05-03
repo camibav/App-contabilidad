@@ -8,7 +8,31 @@
 </head>
 
 <body>
-  <main class="container">
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" aria-label="Navegación principal">
+      <div class="dashboard-sidebar-brand">
+        <span class="dashboard-sidebar-logo" aria-hidden="true">nu</span>
+
+        <div>
+          <strong>Dashboard</strong>
+          <span>Finanzas personales</span>
+        </div>
+      </div>
+
+      <nav class="dashboard-nav" aria-label="Navegación del dashboard">
+        <a href="#upload-section">Carga</a>
+        <a href="#import-diagnostics-section">Importación</a>
+        <a href="#summary-section">Resumen</a>
+        <a href="#data-quality-section">Calidad</a>
+        <a href="#filters-section">Filtros</a>
+        <a href="#charts-section">Gráficas</a>
+        <a href="#categories-section">Categorías</a>
+        <a href="#classification-section">Clasificación</a>
+        <a href="#movements-section">Movimientos</a>
+      </nav>
+    </aside>
+
+    <main class="container dashboard-content">
     <header class="page-header">
       <div class="page-header-content">
         <span class="page-eyebrow">Dashboard financiero personal</span>
@@ -46,18 +70,6 @@
         </ol>
       </aside>
     </header>
-
-    <nav class="dashboard-nav" aria-label="Navegación del dashboard">
-      <a href="#upload-section">Carga</a>
-      <a href="#import-diagnostics-section">Importación</a>
-      <a href="#summary-section">Resumen</a>
-      <a href="#data-quality-section">Calidad</a>
-      <a href="#filters-section">Filtros</a>
-      <a href="#charts-section">Gráficas</a>
-      <a href="#categories-section">Categorías</a>
-      <a href="#classification-section">Clasificación</a>
-      <a href="#movements-section">Movimientos</a>
-    </nav>
 
     <section id="upload-section" class="card upload-card">
       <div class="upload-card-main">
@@ -540,7 +552,8 @@
         <pre id="output" class="output"></pre>
       </details>
     </section>
-  </main>
+    </main>
+  </div>
 
 
   <dialog

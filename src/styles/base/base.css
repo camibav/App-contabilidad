@@ -6,9 +6,11 @@ body {
   margin: 0;
   font-family: var(--font-family-base);
   background:
-    radial-gradient(circle at top left, rgb(130 10 209 / 10%), transparent 34rem),
-    linear-gradient(180deg, var(--color-background), #ffffff 72rem);
+    radial-gradient(circle at top left, rgb(130 10 209 / 8%), transparent 32rem),
+    linear-gradient(180deg, #fbfaff 0%, var(--color-background) 54rem, #ffffff 100%);
   color: var(--color-text);
+  min-height: 100vh;
+  overflow-x: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
