@@ -10,7 +10,6 @@ body {
     linear-gradient(180deg, #fbfaff 0%, var(--color-background) 56rem, #ffffff 100%);
   color: var(--color-text);
   min-height: 100vh;
-  overflow-x: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
