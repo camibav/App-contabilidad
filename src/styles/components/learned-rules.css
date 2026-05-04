@@ -1,44 +1,45 @@
 .learned-rules-count {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
+  min-height: 28px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-surface-muted);
   color: var(--color-text-soft);
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 5px 10px;
+  font-size: 12px;
   font-weight: 800;
   white-space: nowrap;
 }
 
 .learned-rules-list {
   display: grid;
-  gap: 12px;
+  gap: 9px;
 }
 
 .learned-rule-item {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(130px, auto) minmax(150px, auto) auto;
-  gap: 14px;
-  align-items: center;
-  padding: 14px 16px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: start;
+  overflow: hidden;
+  padding: 12px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-muted);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
 }
 
 .learned-rule-main {
   display: grid;
-  gap: 6px;
+  gap: 5px;
   min-width: 0;
 }
 
 .learned-rule-pattern {
   overflow: hidden;
   color: var(--color-text);
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 900;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -46,38 +47,50 @@
 
 .learned-rule-meta {
   color: var(--color-text-muted);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
   line-height: 1.35;
 }
 
 .learned-rule-category,
 .learned-rule-date {
-  display: grid;
-  gap: 4px;
-  justify-items: start;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  min-width: 0;
+  border-top: 1px solid var(--color-border);
+  padding-top: 7px;
   font-variant-numeric: tabular-nums;
 }
 
 .learned-rule-label {
+  min-width: 0;
   color: var(--color-text-muted);
-  font-size: 12px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .learned-rule-category strong,
 .learned-rule-date strong {
+  overflow: hidden;
   color: var(--color-text);
   font-size: 13px;
   font-weight: 900;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .learned-rule-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .learned-rule-delete-button {
+  width: 100%;
   border-color: var(--color-danger);
   color: var(--color-danger);
 }
@@ -88,8 +101,9 @@
 
 .learned-rules-empty-state {
   border: 1px dashed var(--color-border-strong);
-  border-radius: var(--radius-md);
-  padding: 24px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  padding: 20px 14px;
   color: var(--color-text-muted);
   text-align: center;
 }
@@ -98,23 +112,23 @@
   display: block;
   margin-bottom: 6px;
   color: var(--color-text);
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 900;
 }
 
 .learned-rules-empty-state p {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.45;
 }
 
 @media (max-width: 900px) {
   .learned-rule-item {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
 
   .learned-rule-main {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 
   .learned-rule-actions {

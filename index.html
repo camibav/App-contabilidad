@@ -324,132 +324,134 @@
       </div>
     </section>
 
-    <section id="categories-section" class="card">
-      <div class="section-header">
-        <div>
-          <h2>Desglose por categoría</h2>
-          <p class="section-description">
-            Distribución detallada por categoría según los datos filtrados actuales.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="categoryBreakdownList"
-        class="category-breakdown-list"
-        aria-live="polite"
-      ></div>
-    </section>
-
-    <section class="card">
-      <div class="section-header">
-        <div>
-          <h2>Mayores gastos</h2>
-          <p class="section-description">
-            Mayores gastos detectados en los datos filtrados actuales.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="topExpensesList"
-        class="top-expenses-list"
-        aria-live="polite"
-      ></div>
-    </section>
-
-    <section class="card deferred-panel">
-      <div class="section-header">
-        <div>
-          <h2>Gastos recurrentes</h2>
-          <p class="section-description">
-            Gastos detectados en varios meses con base en descripciones similares.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="recurringExpensesList"
-        class="recurring-expenses-list"
-        aria-live="polite"
-      ></div>
-    </section>
-
-    <section class="card deferred-panel">
-      <div class="section-header">
-        <div>
-          <h2>Gastos recurrentes excluidos</h2>
-          <p class="section-description">
-            Patrones excluidos manualmente de los cálculos de gastos recurrentes.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="excludedRecurringExpensesList"
-        class="excluded-recurring-expenses-list"
-        aria-live="polite"
-      ></div>
-    </section>
-
-    <section class="card deferred-panel">
-      <div class="section-header">
-        <div>
-          <h2>Gastos fijos vs variables</h2>
-          <p class="section-description">
-            Distribución estimada entre gastos fijos recurrentes y gastos variables.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="fixedVariableExpensesSummary"
-        class="fixed-variable-summary"
-        aria-live="polite"
-      ></div>
-    </section>
-
-    <section id="classification-section" class="card">
-      <div class="section-header">
-        <div>
-          <h2>Movimientos sin clasificar</h2>
-          <p class="section-description">
-            Movimientos que aún necesitan una categoría en la vista filtrada actual.
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="uncategorizedMovementsList"
-        class="uncategorized-movements-list"
-        aria-live="polite"
-      ></div>
-    </section>
-
-    <section class="card deferred-panel">
-      <div class="section-header">
-        <div>
-          <h2>Reglas de categoría aprendidas</h2>
-          <p class="section-description">
-            Reglas de categorización manual guardadas para futuras importaciones de PDF.
-          </p>
+    <div class="secondary-panels-grid" aria-label="Paneles secundarios">
+      <section id="categories-section" class="card secondary-panel">
+        <div class="section-header">
+          <div>
+            <h2>Desglose por categoría</h2>
+            <p class="section-description">
+              Distribución detallada por categoría según los datos filtrados actuales.
+            </p>
+          </div>
         </div>
 
-        <span
-          id="learnedCategoryRulesCount"
-          class="learned-rules-count"
+        <div
+          id="categoryBreakdownList"
+          class="category-breakdown-list"
           aria-live="polite"
-        >
-          0 reglas
-        </span>
-      </div>
+        ></div>
+      </section>
 
-      <div
-        id="learnedCategoryRulesList"
-        class="learned-rules-list"
-        aria-live="polite"
-      ></div>
-    </section>
+      <section class="card secondary-panel">
+        <div class="section-header">
+          <div>
+            <h2>Mayores gastos</h2>
+            <p class="section-description">
+              Mayores gastos detectados en los datos filtrados actuales.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="topExpensesList"
+          class="top-expenses-list"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <section class="card secondary-panel deferred-panel">
+        <div class="section-header">
+          <div>
+            <h2>Gastos recurrentes</h2>
+            <p class="section-description">
+              Gastos detectados en varios meses con base en descripciones similares.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="recurringExpensesList"
+          class="recurring-expenses-list"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <section class="card secondary-panel deferred-panel">
+        <div class="section-header">
+          <div>
+            <h2>Gastos recurrentes excluidos</h2>
+            <p class="section-description">
+              Patrones excluidos manualmente de los cálculos de gastos recurrentes.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="excludedRecurringExpensesList"
+          class="excluded-recurring-expenses-list"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <section class="card secondary-panel deferred-panel">
+        <div class="section-header">
+          <div>
+            <h2>Gastos fijos vs variables</h2>
+            <p class="section-description">
+              Distribución estimada entre gastos fijos recurrentes y gastos variables.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="fixedVariableExpensesSummary"
+          class="fixed-variable-summary"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <section id="classification-section" class="card secondary-panel">
+        <div class="section-header">
+          <div>
+            <h2>Movimientos sin clasificar</h2>
+            <p class="section-description">
+              Movimientos que aún necesitan una categoría en la vista filtrada actual.
+            </p>
+          </div>
+        </div>
+
+        <div
+          id="uncategorizedMovementsList"
+          class="uncategorized-movements-list"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <section class="card secondary-panel deferred-panel">
+        <div class="section-header">
+          <div>
+            <h2>Reglas de categoría aprendidas</h2>
+            <p class="section-description">
+              Reglas de categorización manual guardadas para futuras importaciones de PDF.
+            </p>
+          </div>
+
+          <span
+            id="learnedCategoryRulesCount"
+            class="learned-rules-count"
+            aria-live="polite"
+          >
+            0 reglas
+          </span>
+        </div>
+
+        <div
+          id="learnedCategoryRulesList"
+          class="learned-rules-list"
+          aria-live="polite"
+        ></div>
+      </section>
+    </div>
 
     <section id="movements-section" class="card">
       <div class="section-header">

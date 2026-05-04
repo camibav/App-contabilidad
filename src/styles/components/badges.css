@@ -69,3 +69,11 @@
   background: var(--color-background);
   color: var(--color-text-muted);
 }
+
+.secondary-panel .category-source-badge {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 3px 7px;
+  font-size: 10px;
+  text-overflow: ellipsis;
+}

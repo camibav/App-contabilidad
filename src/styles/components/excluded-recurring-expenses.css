@@ -1,26 +1,28 @@
 .excluded-recurring-expenses-list {
   display: grid;
-  gap: 12px;
+  gap: 9px;
 }
 
 .excluded-recurring-expenses-summary {
   margin: 0;
   color: var(--color-text-soft);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1.4;
 }
 
 .excluded-recurring-expense-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
-  align-items: center;
-  padding: 14px 16px;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  align-items: start;
+  overflow: hidden;
+  padding: 12px;
   border: 1px solid var(--color-border);
-  border-left: 5px solid var(--color-danger);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-muted);
-  box-shadow: var(--shadow-sm);
+  border-left: 4px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
 }
 
 .excluded-recurring-expense-main {
@@ -30,10 +32,10 @@
 .excluded-recurring-expense-description {
   display: block;
   overflow: hidden;
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   color: var(--color-text);
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 13px;
+  font-weight: 900;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -41,20 +43,30 @@
 .excluded-recurring-expense-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   color: var(--color-text-muted);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.excluded-recurring-expense-meta span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .excluded-recurring-expense-action {
+  width: 100%;
   white-space: nowrap;
 }
 
 .excluded-recurring-expense-empty-state {
   border: 1px dashed var(--color-border-strong);
-  border-radius: var(--radius-md);
-  padding: 24px 16px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  padding: 20px 14px;
   color: var(--color-text-muted);
   text-align: center;
 }
@@ -63,13 +75,13 @@
   display: block;
   margin-bottom: 6px;
   color: var(--color-text);
-  font-size: 15px;
-  font-weight: 800;
+  font-size: 14px;
+  font-weight: 900;
 }
 
 .excluded-recurring-expense-empty-state p {
   margin: 0;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.45;
 }
 
