@@ -1,12 +1,11 @@
-/* Movements table responsive behavior
-   Sugerencia modular: mantener este bloque en src/styles/components/movements-table-responsive.css
-   o integrarlo al final de src/styles/components/movements-table.css si prefieres un solo módulo para la tabla. */
+/* Responsive behavior for the movements table keeps the real table and controls overflow inside the card. */
 
 @media (max-width: 760px) {
   .table-toolbar {
     align-items: stretch;
     flex-direction: column;
-    gap: 0.85rem;
+    gap: 10px;
+    padding: 10px;
   }
 
   .page-size-control,
@@ -16,7 +15,9 @@
 
   .page-size-control {
     display: grid;
-    gap: 0.4rem;
+    grid-template-columns: minmax(0, 1fr) minmax(78px, auto);
+    gap: 8px;
+    align-items: center;
   }
 
   .page-size-control select {
@@ -26,7 +27,7 @@
   .pagination-controls {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.65rem;
+    gap: 8px;
   }
 
   .pagination-status {
@@ -36,120 +37,40 @@
 
   .pagination-controls > button {
     width: 100%;
+    min-width: 0;
   }
 
   .table-wrapper {
-    overflow-x: visible;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .movements-table {
-    min-width: 0;
-    border-collapse: separate;
-    border-spacing: 0;
+    min-width: 820px;
+    font-size: 12px;
   }
 
-  .movements-table thead {
-    display: none;
-  }
-
-  .movements-table,
-  .movements-table tbody,
-  .movements-table tr,
+  .movements-table th,
   .movements-table td {
-    display: block;
-    width: 100%;
+    padding: 10px 11px;
   }
 
-  .movements-table tbody {
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  .movements-table tr {
-    padding: 0.95rem;
-    border: 1px solid var(--color-border, rgba(148, 163, 184, 0.35));
-    border-radius: 1rem;
-    background: var(--color-surface, #ffffff);
-    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
-  }
-
-  .movements-table td {
-    display: grid;
-    grid-template-columns: minmax(6.5rem, 0.42fr) minmax(0, 1fr);
-    gap: 0.75rem;
-    align-items: start;
-    padding: 0.58rem 0;
-    border: 0;
-    border-bottom: 1px solid var(--color-border-subtle, rgba(148, 163, 184, 0.18));
-  }
-
-  .movements-table td:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
-  }
-
-  .movements-table td:first-child {
-    padding-top: 0;
-  }
-
-  .movements-table td::before {
-    content: attr(data-label);
-    color: var(--color-text-muted, #64748b);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.055em;
-    line-height: 1.4;
-    text-transform: uppercase;
-  }
-
-  .movements-table .description-cell,
-  .movements-table .source-cell {
-    overflow-wrap: anywhere;
-  }
-
-  .movements-table .category-cell .category-control {
-    width: 100%;
-  }
-
-  .movements-table .category-cell select {
-    width: 100%;
-  }
-
-  .movements-table .amount {
-    text-align: right;
-  }
-
-  .movements-table .type-cell {
-    align-items: center;
+  .movements-table td:nth-child(3) {
+    min-width: 250px;
   }
 
   .movements-table .movements-empty-state {
-    display: block;
-    padding: 0;
-    border: 0;
-  }
-
-  .movements-table .movements-empty-state::before {
-    content: none;
-  }
-
-  .movement-table-row--empty {
-    padding: 1rem;
+    padding: 28px 14px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .movements-table tr {
-    padding: 0.85rem;
-    border-radius: 0.9rem;
-  }
-
-  .movements-table td {
+  .page-size-control {
     grid-template-columns: 1fr;
-    gap: 0.35rem;
   }
 
-  .movements-table .amount {
-    text-align: left;
+  .movements-table {
+    min-width: 760px;
   }
 }

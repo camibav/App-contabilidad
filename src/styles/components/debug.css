@@ -1,25 +1,103 @@
+.debug-card {
+  margin-bottom: 0;
+  border-style: dashed;
+  background: linear-gradient(180deg, rgb(255 255 255 / 82%), rgb(248 247 252 / 82%));
+  box-shadow: none;
+}
+
+.debug-card:hover {
+  box-shadow: none;
+}
+
+.debug-panel {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  padding: 0;
+}
+
 .output {
-  min-height: 360px;
-  max-height: 640px;
+  min-height: 180px;
+  max-height: 360px;
   overflow: auto;
-  padding: 16px;
-  background: var(--color-dark);
-  color: var(--color-background);
-  border-radius: var(--radius-md);
+  margin: 0;
+  border-top: 1px solid var(--color-border);
+  background:
+    linear-gradient(180deg, rgb(24 24 27 / 96%), rgb(16 5 51 / 96%)),
+    var(--color-dark);
+  color: #f5f3ff;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  padding: 14px 16px;
+  font-size: 12px;
   white-space: pre-wrap;
-  line-height: 1.5;
+  line-height: 1.55;
+  scrollbar-color: rgb(255 255 255 / 24%) transparent;
+  scrollbar-width: thin;
 }
 
 .debug-panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   cursor: pointer;
-  font-weight: 850;
+  list-style: none;
+  border-radius: var(--radius-lg);
   color: var(--color-text-soft);
+  padding: 13px 14px;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.debug-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.debug-panel summary::after {
+  content: "+";
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-muted);
+  color: var(--color-brand-dark);
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.debug-panel[open] summary {
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.debug-panel[open] summary::after {
+  content: "-";
 }
 
 .debug-panel summary:hover {
   color: var(--color-brand-dark);
 }
 
+.debug-panel summary:focus-visible {
+  outline: 3px solid var(--color-brand-soft-strong);
+  outline-offset: 3px;
+}
+
 .debug-panel .output {
-  margin-top: 16px;
+  margin-top: 0;
+}
+
+@media (max-width: 560px) {
+  .debug-card {
+    padding: 12px;
+  }
+
+  .output {
+    max-height: 280px;
+    padding: 12px;
+    font-size: 11px;
+  }
 }

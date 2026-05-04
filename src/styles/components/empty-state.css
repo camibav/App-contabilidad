@@ -1,9 +1,13 @@
 .movements-empty-state {
   width: auto !important;
-  padding: 36px 16px !important;
+  padding: 42px 18px !important;
   color: var(--color-text-soft);
   text-align: center !important;
   white-space: normal !important;
+}
+
+.movements-table tbody tr.movement-table-row--empty:hover {
+  background: transparent;
 }
 
 .empty-state,
@@ -11,6 +15,15 @@
   display: grid;
   gap: 8px;
   justify-items: center;
+}
+
+.movements-empty-state .empty-state {
+  max-width: 560px;
+  margin: 0 auto;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-muted);
+  padding: 22px;
 }
 
 .empty-state-title,

@@ -1,5 +1,10 @@
 .amount {
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
+}
+
+.movements-table .amount {
+  font-weight: 900;
 }
 
 .amount--income {
